@@ -12,58 +12,10 @@ import time
 import threading
 import socket
 
-# 서버 설정
-tcp_read = True
-host = "0.0.0.0"  # 서버의 IP 주소 또는 도메인 이름
-port = 8080       # 포트 번호
+from_class = uic.loadUiType("/home/hdk/ws/pyqt/data/opencv.ui")[0]
 
-# 서버 소켓 생성
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind((host, port))
-server_socket.listen(5)
 
-def receiveTCPEvent():
-    global server_socket, tcp_read
-    while tcp_read is True:
-        # 클라이언트 연결 대기
-        client_socket, client_address = server_socket.accept()
-        print(f"클라이언트 {client_address}가 연결되었습니다.")
-        
-        try:
-            # 클라이언트로부터 요청 받기
-            data = client_socket.recv(1024).decode("utf-8")
-            if not data:
-                continue
 
-            # 요청 파싱
-            parts = data.split("&&")
-            if len(parts) != 0:
-                name = parts[0]
-                message = parts[1]
-                response = f"어서와! {name}"
-
-                # 클라이언트 이름과 메시지 출력
-                print(f"클라이언트 이름: {name}")
-                print(f"클라이언트 메시지: {message}")
-            else:
-                response = "유효하지 않은 요청"
-
-            # 응답 클라이언트에게 전송
-            client_socket.send(response.encode("utf-8"))
-
-        except Exception as e:
-            print(f"오류 발생: {e}")
-
-        finally:
-            pass
-            # 클라이언트 소켓 닫기
-            # print("연결종료")
-            # client_socket.close()
-    return
-tcp_thread = threading.Thread(target=receiveTCPEvent)
-tcp_thread.start()
-
-# print(f"서버가 {host}:{port}에서 대기 중입니다...")
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -79,8 +31,6 @@ class Camera(QThread):
 
     def stop(self):
         self.running = False
-
-from_class = uic.loadUiType("/home/hdk/ws/pyqt/data/opencv.ui")[0]
 
 class WindowClass(QMainWindow, from_class):
     def __init__(self):
@@ -150,13 +100,69 @@ class WindowClass(QMainWindow, from_class):
 
         self.label.setPixmap(self.pixmap)
 
+def receiveTCPEvent(server_socket, tcp_read, myWindows):
+    while tcp_read is True:
+        # 클라이언트 연결 대기
+        client_socket, client_address = server_socket.accept()
+        print(f"클라이언트 {client_address}가 연결되었습니다.")
+        
+        try:
+            # 클라이언트로부터 요청 받기
+            data = client_socket.recv(1024).decode("utf-8")
+            if not data:
+                continue
+
+            # 요청 파싱
+            parts = data.split("&&")
+            if len(parts) != 0:
+                name = parts[0]
+                message = parts[1]
+                response = f"어서와! {name}"
+
+                # 클라이언트 이름과 메시지 출력
+                print(f"클라이언트 이름: {name}")
+                print(f"클라이언트 메시지: {message}")
+            else:
+                response = "유효하지 않은 요청"
+
+            # 응답 클라이언트에게 전송
+            client_socket.send(response.encode("utf-8"))
+
+        except Exception as e:
+            print(f"오류 발생: {e}")
+
+        finally:
+            pass
+            # 클라이언트 소켓 닫기
+            print("연결종료")
+            client_socket.close()
+    return
+
+
+
 if __name__=="__main__":
+    # GUI 생성
     app = QApplication(sys.argv)
     myWindows = WindowClass()
+
+    # 서버 설정
+    tcp_read = True
+    host = "0.0.0.0"  # 서버의 IP 주소 또는 도메인 이름
+    port = 8080       # 포트 번호
+
+    # 서버 소켓 생성
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    server_socket.listen(5)
+
+    # 쓰레드 생성 및 시작
+    tcp_thread = threading.Thread(target=receiveTCPEvent, 
+                                  args=(server_socket, tcp_read, myWindows))
+    tcp_thread.start()
+
+    # GUI 시작
     myWindows.show()
-
     sys.exit(app.exec_())
-
     print("Program End.")
 
 

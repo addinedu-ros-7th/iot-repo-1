@@ -36,16 +36,6 @@ class WindowClass(QMainWindow, from_class):
         super().__init__()
         self.setupUi(self)
 
-    def closeEvent(self, event):
-        global tcp_read
-        message = QMessageBox.question(self, "Question", "Are you sure you want to quit?")
-        if message == QMessageBox.Yes:
-            tcp_read = False
-            tcp_thread.join()
-            event.accept()
-        else:
-            event.ignore()
-
 def receiveTCPEvent(server_socket, myWindows):
     global tcp_read
     while tcp_read is True:
@@ -68,7 +58,8 @@ def receiveTCPEvent(server_socket, myWindows):
 
                 # 클라이언트 이름과 메시지 출력
                 print(f"클라이언트 Key: {key}")
-                print(f"클라이언트 메시지: {key}")
+                print(f"클라이언트 메시지: {message}")
+                myWindows.label_14.setText(key)
             else:
                 response = "유효하지 않은 요청"
 

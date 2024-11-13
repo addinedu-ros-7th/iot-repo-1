@@ -10,8 +10,13 @@ import time
 import serial
 import threading
 import socket
+import mysql.connector
+import numpy as np
+from datetime import datetime
 
-from_class = uic.loadUiType("project/iot-repo-1/src/Client/Main.ui")[0]
+import base64
+
+from_class = uic.loadUiType("project/iot-repo-1/src/Server/AruinoService.ui")[0]
 tcp_controller_read_flag = True
 tcp_client_read_flag = True
 sefial_read_flag = True
@@ -35,9 +40,25 @@ class WindowClass(QMainWindow, from_class):
     def __init__(self, py_serial, server_socket0, server_socket1):
         super().__init__()
         self.setupUi(self)
+
+        self.isCameraOn = False
+        self.camera = Camera(self)
+        self.camera.daemon = True
+        self.img = np.zeros((100,100))
+        self.qimg = None
+        self.count = 0
+        self.pixmap = QPixmap()
+
         self.server_socket0 = server_socket0
         self.server_socket1 = server_socket1
         self.py_serial = py_serial
+
+        self.petID = None
+        self.petName = None
+        self.petBirth = None
+        self.petWeight = None
+        self.petSpecies = None
+        self.contactNumber = None
 
         self.h = 0
         self.t = 0
@@ -45,12 +66,94 @@ class WindowClass(QMainWindow, from_class):
         self.x = 0
         self.y = 0
 
+        self.remote = mysql.connector.connect(
+            host = "database-1.c3micoc2s6p8.ap-northeast-2.rds.amazonaws.com",
+            user = "aru",
+            password = "1234",
+            database = "aruino"
+        )
+
+        self.camera.update.connect(self.updateCamera)
+        self.isCameraOn = True
+        self.camera.running = True
+        self.camera.start()
+        self.video = cv2.VideoCapture(-1)
+
+    def updateCamera(self):
+        # self.label.setText("Camera Running : " + str(self.count))
+        # self.count += 1
+        retval, img = self.video.read()
+
+        if retval:
+            self.img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+            h,w,c = img.shape
+            self.qimg = QImage(self.img.data, w,h,w*c, QImage.Format_RGB888)
+
+            self.pixmap = self.pixmap.fromImage(self.qimg)
+            self.pixmap = self.pixmap.scaled(self.labelCam.width(), self.labelCam.height())
+
+            self.labelCam.setPixmap(self.pixmap)
+            # print(self.qimg)
+            # print(img)
+        # self.count += 1
+
+        # send(qimg)
+
+    def initUI(self):
+        self.labelID.setText(str(self.petID))
+        self.labelName.setText(str(self.petName))
+        self.labelAge.setText(str(self.petBirth))
+        self.labelWeight.setText(str(self.petWeight))
+        self.labelSpecies.setText(str(self.petSpecies))
+        self.labelContactNumber.setText(str(self.contactNumber))
+
     def closeEvent(self, event):
         global tcp_controller_read_flag, tcp_client_read_flag, sefial_read_flag
         print("소켓 해제")
         tcp_controller_read_flag = False
         tcp_client_read_flag = False
         sefial_read_flag = False
+
+    def fetchClientFirstInit(self, id):
+        print("hello fetch")
+        if self.remote:
+            self.cur = self.remote.cursor(buffered=True)
+            self.cur.execute(f"SELECT * FROM pet where id = {id}")
+            print(self.cur)
+            petInfo = self.cur.fetchall()
+            self.petID = petInfo[0][0]
+            self.petName = petInfo[0][1]
+            self.petBirth = petInfo[0][2]
+            self.petWeight = petInfo[0][3]
+            self.petSpecies = petInfo[0][4]
+            self.contactNumber = petInfo[0][5]
+            self.initUI()
+
+            response = []
+            for val in petInfo[0]:
+                response.append(str(val))
+            print(response)
+            return "&&".join(response)
+        # if self.local:
+        #     self.cur = self.local.cursor(buffered=True)
+        #     sql = "SELECT * FROM pet where id = {id}".format(id=id)
+        #     self.cur.execute(sql)
+        #     petInfo = self.cur.fetchall()
+        #     self.petID = petInfo[0][0]
+        #     self.petName = petInfo[0][1]
+        #     self.petBirth = petInfo[0][2]
+        #     self.petWeight = petInfo[0][3]
+        #     self.petSpecies = petInfo[0][4]
+        #     self.contactNumber = petInfo[0][5]
+        #     print("name : ", self.petName)
+        #     print("birth : ", self.petBirth)
+        #     print("weight : ", self.petWeight)
+        #     print("species : ", self.petSpecies)
+        #     print("contactNumber : ", self.contactNumber)
+        #     self.initUI()
+        else:
+            print("not connected")
 
 def receiveTCPControllerEvent(server_socket0, myWindows):
     global tcp_controller_read_flag
@@ -144,18 +247,9 @@ def receiveTCPClientEvent(server_socket1, myWindows):
 
                     # TODO: DB에서 기본 정보 불러오기
                     print("Pet ID:", parts[1])
-
-                    response = []
-                    response.append("Client First Init")
-                    response.append("아루")
-                    response.append("2018-10-24")
-                    response.append("25")
-                    response.append("Dog")
-                    response.append("010-1234-5678")
-                    response = "&&".join(response)
-                    print("response:", response)
-
+                    response = myWindows.fetchClientFirstInit(parts[1])
                     client_socket.send(response.encode("utf-8"))
+                    
                 elif parts[0] == "Sync Data":
                     # print(parts)
 
@@ -171,7 +265,6 @@ def receiveTCPClientEvent(server_socket1, myWindows):
                     print("response:", response)
 
                     client_socket.send(response.encode("utf-8"))
-
                 elif parts[0] == "WebCam Control":
                     '''
                     TODO:
@@ -179,7 +272,22 @@ def receiveTCPClientEvent(server_socket1, myWindows):
                     '''
                     print(f"웹캠을 {parts[1]} 방향으로 이동 {parts[2]}")
                     print(parts)
+                elif parts[0] == "Request WebCam Image":
 
+                    resize_frame = cv2.resize(myWindows.img, dsize=(670, 520), interpolation=cv2.INTER_AREA)
+
+                    now = time.localtime()
+                    stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
+
+                    encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
+                    result, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
+                    data = np.array(imgencode)
+                    stringData = base64.b64encode(data)
+                    length = str(len(stringData))
+                    client_socket.sendall(length.encode('utf-8').ljust(64))
+                    client_socket.send(stringData)
+                    client_socket.send(stime.encode('utf-8').ljust(64))
+                
             else:
                 response = "유효하지 않은 요청"
                 print("Key Error")
@@ -222,7 +330,7 @@ def receiveSerialEvent(py_serial, myWindows):
 
             # check Key
             if serial_read_data[1] == '2':
-                myWindows.labelTempBody.setText(serial_read_data[3][:2])
+                # myWindows.labelTempBody.setText(serial_read_data[3][:2])
                 # db에 저장하면 좋은가
                 myWindows.h = serial_read_data[2]
                 myWindows.t = serial_read_data[3]

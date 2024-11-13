@@ -5,45 +5,23 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
-import mysql.connector
-import datetime
-import time
-import serial
-import threading
-import time
+# import mysql.connector
+from datetime import datetime
+# import time
+# import threading
 import socket
 import numpy as np
+import time
+import base64
 
-class Socket():
-    def setting(self):
-        '''서버 설정'''
-        self.server_address = "192.168.2.29"  # 서버의 실제 IP 주소 또는 도메인 이름
-        self.server_port = 8080       # 서버 포트 번호
+socket_thread_flag = True
+form_class = uic.loadUiType("Main.ui")[0]
+form_cam_Class = uic.loadUiType("Cam.ui")[0]
 
-    def connect(self):
-        '''서버에 연결'''
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect((self.server_address, self.server_port))
+server_address = "192.168.2.29"
+server_port = 8081
 
-    def send(self):
-        '''데이터 전송'''
-        self.name = "미니몬"
-        self.message = "안녕, 서버!"
-        self.request = f"{self.name}&&{self.message}"
-        self.client_socket.send(self.request.encode("utf-8"))
-
-    def receive(self):
-        '''서버로부터 응답 받기'''
-        self.response = self.client_socket.recv(1024).decode("utf-8")
-        print(f"{self.name} : {self.message}")
-        print(f"서버 : {self.response}\n")
-        return self.response
-
-    def close(self):
-        # 클라이언트 소켓 닫기
-        self.client_socket.close()
-
-class Time(QThread):
+class Camera(QThread):
     update = pyqtSignal()
 
     def __init__(self, sec=0, parent=None):
@@ -55,37 +33,35 @@ class Time(QThread):
         self.count = 0
         while self.running == True:
             self.update.emit()
-            time.sleep(2)
+            time.sleep(0.1)
 
     def stop(self):
         self.running = False
-
-form_class = uic.loadUiType("Main.ui")[0]
-form_cam_Class = uic.loadUiType("Cam.ui")[0]
 
 class WindowClass(QMainWindow, form_class):  # GUI 클래스
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.initUI()
+
         self.setIcon()
-        # # self.connectSql()
-        # self.pulseData = self.fetchPulse()
-
-        self.socket = Socket()
-        self.socket.setting()
-        self.socket.connect()
-
-        # self.time = Time(self)
-        # self.time.daemon = True
-        # self.time.start()
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateTime)
-        self.timer.timeout.connect(self.fetchPulse)
+        self.timer.timeout.connect(self.fetchSyncData)
         self.timer.start(1000) # 1000ms = 1s
 
         self.updateTime()
+
+        messages = []
+        messages.append("Client First Init")
+        messages.append("1")
+
+        response = self.requestTCP(messages)
+        response = response.split("&&")
+        self.name = response[1]
+        self.age = response[2]
+        print("request :", response)
+        self.initUI()
         
     def initUI(self):
         self.btnCameraPage.clicked.connect(self.cameraPage)
@@ -97,29 +73,45 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
 
         self.labelFood.hide()
 
-    def connectSql(self):
-        self.remote = mysql.connector.connect(
-            host = "server",
-            user = "name",
-            password = "****",
-            database = "db"
-        )
+        self.labelName.setText(self.name)
+        self.labelAge.setText(self.age)
+
+    def sendTCP(self, messages):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+        client_socket.close()
+
+    def requestTCP(self, messages):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+
+        response = client_socket.recv(1024).decode('utf-8')
+        # print("response :", response)
+        client_socket.close()
+        return response
+    
+    def fetchSyncData(self):
+        self.response = self.requestTCP(["Sync Data"])
+        # print("request :", self.response)
+        response = self.response.split("&&")
+        if response[0] == "Sync Data":
+            temp = response[2]
+            humidity = response[1]
+
+        # print("temperature :", temp, "humidity :", humidity)
 
     def fetchPulse(self):
-        # if self.remote:
-        #     self.cur = self.remote.cursor(buffered=True)
-        #     self.labelPulse.setText("connected")
-        #     # self.cur.execute("SELECT heart_rate FROM heart_rate order by desc limit 1") 
-        #     # self.pulseData = self.cur.fetchall()
-        #     # self.labelPulse.setText(str(self.pulseData[0][0]))
-        # else:
-        #     self.labelPulse.setText("not connected")
-
-        if self.socket:
-            self.socket.receive()
+        try:
+            self.remote
+            self.cur = self.remote.cursor(buffered=True)
+            self.labelPulse.setText("00")
+        except:
+            self.labelPulse.setText("--")
 
     def updateTime(self):
-        self.now = datetime.datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')
+        self.now = datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')
         self.labelDateTime.setText(self.now)
 
     def setIcon(self):
@@ -165,34 +157,45 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         pass
 
 class CamWindowClass(QMainWindow, form_cam_Class):
-    def __init__(self, windowClass):
-        # super(CamWindowClass, self).__init__() # why CamWindowClass?
+    def __init__(self, windowClass, ):
         super().__init__()
         self.setupUi(self)
         self.initUI()
         self.setIcon()
-
         self.windowClass = windowClass
 
-        # print("windowClass set in CamWindowClass", self.windowClass)
+        self.isCameraOn = False
+        self.camera = Camera(self)
+        self.camera.daemon = True
+
+        self.camera.update.connect(self.updateCamera)
+        self.isCameraOn = True
+        self.camera.running = True
+        self.camera.start()
 
     def initUI(self):
         self.btnMainPage.clicked.connect(self.mainPage)
-        self.btnRight.clicked.connect(lambda : self.cameraMove("right"))
-        self.btnDown.clicked.connect(lambda : self.cameraMove("down"))
-        self.btnUp.clicked.connect(lambda : self.cameraMove("up"))
-        self.btnLeft.clicked.connect(lambda : self.cameraMove("left"))
 
-        # self.labelPulse.setText(str(self.windowClass.labelPulse.text()))
+        self.pixmap = QPixmap()
+        self.labelCamera.setPixmap(self.pixmap)
 
-        # if hasattr(self.windowClass, 'labelPulse'):
-        #     self.labelPulse.setText(str(self.windowClass.labelPulse.text()))
-        # else:
-        #     print("Error : windowClass does not have 'labelPulse' attribute")
+        self.btnRight.setCheckable(True)
+        self.btnDown.setCheckable(True)
+        self.btnUp.setCheckable(True)
+        self.btnLeft.setCheckable(True)
+
+        self.btnRight.pressed.connect(lambda : self.cameraMove("right"))
+        self.btnDown.pressed.connect(lambda : self.cameraMove("down"))
+        self.btnUp.pressed.connect(lambda : self.cameraMove("up"))
+        self.btnLeft.pressed.connect(lambda : self.cameraMove("left"))
+
+        self.btnRight.released.connect(lambda : self.cameraStop("right"))
+        self.btnDown.released.connect(lambda : self.cameraStop("down"))
+        self.btnUp.released.connect(lambda : self.cameraStop("up"))
+        self.btnLeft.released.connect(lambda : self.cameraStop("left"))
 
         self.btnGood.clicked.connect(lambda : self.sendSound("good"))
         self.btnComeOn.clicked.connect(lambda : self.sendSound("comeon"))
-
 
     def setIcon(self):
         self.btnMainPage.setIcon(QIcon("../../data/icon/home.png"))
@@ -215,31 +218,78 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.sound.play()
 
     def cameraMove(self, key):
-        x = self.label.x()
-        y = self.label.y()
+        messages = []
+        messages.append("WebCam Control")  # key
+        messages.append(key)    # value
+        messages.append("start")
 
-        match(key):
-            case "right":
-                x += 10
-            case "left":
-                x -= 10
-            case "up":
-                y -= 10
-            case "down":
-                y += 10
+        self.sendTCP(messages)
 
-        self.label.move(x, y)
+    def cameraStop(self, key):
+        messages = []
+        messages.append("WebCam Control")  # key
+        messages.append(key)    # value
+        messages.append("stop")
+
+        self.sendTCP(messages)
+
+    def sendTCP(self, messages):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+        client_socket.close()
+
+    def recvall(self, sock, count):
+        buf = b''
+        while count:
+            newbuf = sock.recv(count)
+            if not newbuf: return None
+            buf += newbuf
+            count -= len(newbuf)
+        return buf
+    
+    def requestTCP(self, messages, iscamera=False):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+
+        if not iscamera:
+            response = client_socket.recv(1024).decode('utf-8')
+            client_socket.close()
+            return response
+        else:
+            length = self.recvall(client_socket, 64)
+            length1 = length.decode('utf-8')
+            stringData = self.recvall(client_socket, int(length1))
+            stime = self.recvall(client_socket, 64)
+            # print('camera send time: ' + stime.decode('utf-8'))
+            # now = time.localtime()
+            # print('receive time: ' + datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f'))
+            data = np.frombuffer(base64.b64decode(stringData), np.uint8)
+            decimg = cv2.imdecode(data, 1)
+            return decimg
+
+    def updateCamera(self):
+        image = self.requestTCP(["Request WebCam Image"], iscamera=True)
+        h, w, c = image.shape
+        qimage = QImage(image.data, w, h, w*c, QImage.Format_RGB888)
+        self.pixmap = self.pixmap.fromImage(qimage)
+        self.labelCamera.setPixmap(self.pixmap)
 
     def mainPage(self):
         self.hide()
         self.main = WindowClass()
-        # self.main.exec()
         self.main.show()
+        self.isCameraOn = False
+        self.camera.stop()
 
+def receiveTCPEvent(client_socket, windowClass):
+    while socket_thread_flag == True:
+        data = client_socket.recv(1024).decode('utf-8')
+        print(data)
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)   
+    app = QApplication(sys.argv)     
     myWindows = WindowClass()   
-
     myWindows.show()
     sys.exit(app.exec_())

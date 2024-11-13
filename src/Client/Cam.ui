@@ -197,8 +197,8 @@ border-style:solid;</string>
     <rect>
      <x>70</x>
      <y>160</y>
-     <width>671</width>
-     <height>521</height>
+     <width>670</width>
+     <height>520</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -452,14 +452,14 @@ background-color:#66CDAA;</string>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>390</y>
+     <x>390</x>
+     <y>340</y>
      <width>71</width>
      <height>71</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>사생활보호</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPlace1">

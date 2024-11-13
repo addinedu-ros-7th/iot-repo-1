@@ -11,7 +11,37 @@ import time
 import serial
 import threading
 import time
+import socket
 import numpy as np
+
+class Socket():
+    def setting(self):
+        '''서버 설정'''
+        self.server_address = "192.168.2.29"  # 서버의 실제 IP 주소 또는 도메인 이름
+        self.server_port = 8080       # 서버 포트 번호
+
+    def connect(self):
+        '''서버에 연결'''
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_socket.connect((self.server_address, self.server_port))
+
+    def send(self):
+        '''데이터 전송'''
+        self.name = "미니몬"
+        self.message = "안녕, 서버!"
+        self.request = f"{self.name}&&{self.message}"
+        self.client_socket.send(self.request.encode("utf-8"))
+
+    def receive(self):
+        '''서버로부터 응답 받기'''
+        self.response = self.client_socket.recv(1024).decode("utf-8")
+        print(f"{self.name} : {self.message}")
+        print(f"서버 : {self.response}\n")
+        return self.response
+
+    def close(self):
+        # 클라이언트 소켓 닫기
+        self.client_socket.close()
 
 class Time(QThread):
     update = pyqtSignal()
@@ -39,8 +69,12 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.setupUi(self)
         self.initUI()
         self.setIcon()
-        self.connectSql()
-        self.pulseData = self.fetchPulse()
+        # # self.connectSql()
+        # self.pulseData = self.fetchPulse()
+
+        self.socket = Socket()
+        self.socket.setting()
+        self.socket.connect()
 
         # self.time = Time(self)
         # self.time.daemon = True
@@ -65,21 +99,24 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
 
     def connectSql(self):
         self.remote = mysql.connector.connect(
-            host = "database-1.c3micoc2s6p8.ap-northeast-2.rds.amazonaws.com",
-            user = "aru",
-            password = "1234",
-            database = "aruino"
+            host = "server",
+            user = "name",
+            password = "****",
+            database = "db"
         )
 
     def fetchPulse(self):
-        if self.remote :
-            self.cur = self.remote.cursor(buffered=True)
-            self.labelPulse.setText("connected")
-            # self.cur.execute("SELECT heart_rate FROM heart_rate order by desc limit 1") 
-            # self.pulseData = self.cur.fetchall()
-            # self.labelPulse.setText(str(self.pulseData[0][0]))
-        else:
-            self.labelPulse.setText("not connected")
+        # if self.remote:
+        #     self.cur = self.remote.cursor(buffered=True)
+        #     self.labelPulse.setText("connected")
+        #     # self.cur.execute("SELECT heart_rate FROM heart_rate order by desc limit 1") 
+        #     # self.pulseData = self.cur.fetchall()
+        #     # self.labelPulse.setText(str(self.pulseData[0][0]))
+        # else:
+        #     self.labelPulse.setText("not connected")
+
+        if self.socket:
+            self.socket.receive()
 
     def updateTime(self):
         self.now = datetime.datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')

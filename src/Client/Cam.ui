@@ -17,7 +17,7 @@
    <string notr="true">background-color:white
 </string>
   </property>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="labelPulseIcon">
    <property name="geometry">
     <rect>
      <x>900</x>
@@ -35,13 +35,13 @@ background-color:transparent;
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../../Downloads/free-icon-love-14415504.png</pixmap>
+    <pixmap>../../../../Downloads/free-icon-love-14415504.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="labelFrame">
    <property name="geometry">
     <rect>
      <x>770</x>
@@ -58,11 +58,11 @@ border-radius:30px;</string>
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnMain">
+  <widget class="QPushButton" name="btnMainPage">
    <property name="geometry">
     <rect>
      <x>80</x>
-     <y>50</y>
+     <y>60</y>
      <width>81</width>
      <height>81</height>
     </rect>
@@ -79,7 +79,7 @@ border-style:solid;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/home.png</normaloff>../../Downloads/home.png</iconset>
+     <normaloff>../../../../Downloads/home.png</normaloff>../../../../Downloads/home.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -88,7 +88,7 @@ border-style:solid;</string>
     </size>
    </property>
   </widget>
-  <widget class="QLabel" name="label_9">
+  <widget class="QLabel" name="labelPulse">
    <property name="geometry">
     <rect>
      <x>980</x>
@@ -115,11 +115,11 @@ border-style:solid;</string>
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_11">
+  <widget class="QLabel" name="btnGpsPage">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>50</y>
+     <x>180</x>
+     <y>60</y>
      <width>81</width>
      <height>81</height>
     </rect>
@@ -141,7 +141,7 @@ border-style:solid;</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_16">
+  <widget class="QLabel" name="labelTempBody">
    <property name="geometry">
     <rect>
      <x>790</x>
@@ -168,7 +168,7 @@ border-style:solid;</string>
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_17">
+  <widget class="QLabel" name="labelTempC">
    <property name="geometry">
     <rect>
      <x>840</x>
@@ -192,7 +192,7 @@ border-style:solid;</string>
     <string>°C</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="labelCamera">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -208,7 +208,7 @@ border-style:solid;</string>
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="btnRight">
    <property name="geometry">
     <rect>
      <x>970</x>
@@ -226,7 +226,7 @@ background-color:#FF0000;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/right-arrow.png</normaloff>../../Downloads/right-arrow.png</iconset>
+     <normaloff>../../../../Downloads/right-arrow.png</normaloff>../../../../Downloads/right-arrow.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -235,7 +235,7 @@ background-color:#FF0000;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="btnUp">
    <property name="geometry">
     <rect>
      <x>890</x>
@@ -253,7 +253,7 @@ background-color:#6495ED;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/play.png</normaloff>../../Downloads/play.png</iconset>
+     <normaloff>../../../../Downloads/play.png</normaloff>../../../../Downloads/play.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -262,7 +262,7 @@ background-color:#6495ED;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="btnDown">
    <property name="geometry">
     <rect>
      <x>890</x>
@@ -280,7 +280,7 @@ background-color:	#FFA500;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/arrow-down-sign-to-navigate.png</normaloff>../../Downloads/arrow-down-sign-to-navigate.png</iconset>
+     <normaloff>../../../../Downloads/arrow-down-sign-to-navigate.png</normaloff>../../../../Downloads/arrow-down-sign-to-navigate.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -289,7 +289,7 @@ background-color:	#FFA500;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_5">
+  <widget class="QPushButton" name="btnLeft">
    <property name="geometry">
     <rect>
      <x>810</x>
@@ -307,7 +307,7 @@ background-color:#66CDAA;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/arrow-right.png</normaloff>../../Downloads/arrow-right.png</iconset>
+     <normaloff>../../../../Downloads/arrow-right.png</normaloff>../../../../Downloads/arrow-right.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -319,7 +319,7 @@ background-color:#66CDAA;</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_6">
+  <widget class="QPushButton" name="btnFeed">
    <property name="geometry">
     <rect>
      <x>980</x>
@@ -336,7 +336,7 @@ background-color:#66CDAA;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/free-icon-pet-food-6903249.png</normaloff>../../Downloads/free-icon-pet-food-6903249.png</iconset>
+     <normaloff>../../../../Downloads/free-icon-pet-food-6903249.png</normaloff>../../../../Downloads/free-icon-pet-food-6903249.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -345,7 +345,7 @@ background-color:#66CDAA;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_7">
+  <widget class="QPushButton" name="btnPlay">
    <property name="geometry">
     <rect>
      <x>820</x>
@@ -362,7 +362,7 @@ background-color:#66CDAA;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../Downloads/dog-ball.png</normaloff>../../Downloads/dog-ball.png</iconset>
+     <normaloff>../../../../Downloads/dog-ball.png</normaloff>../../../../Downloads/dog-ball.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -371,34 +371,7 @@ background-color:#66CDAA;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_8">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>60</y>
-     <width>61</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-style:outset;
-border-radius:30px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>../../Downloads/paws.png</normaloff>../../Downloads/paws.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>40</width>
-     <height>40</height>
-    </size>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_9">
+  <widget class="QPushButton" name="btnComeOn">
    <property name="geometry">
     <rect>
      <x>787</x>
@@ -411,7 +384,7 @@ border-radius:30px;</string>
     <string>이리와</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_10">
+  <widget class="QPushButton" name="btnGood">
    <property name="geometry">
     <rect>
      <x>787</x>
@@ -424,7 +397,7 @@ border-radius:30px;</string>
     <string>잘했어</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_11">
+  <widget class="QPushButton" name="btnEat">
    <property name="geometry">
     <rect>
      <x>877</x>
@@ -437,7 +410,7 @@ border-radius:30px;</string>
     <string>밥먹자</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_12">
+  <widget class="QPushButton" name="btnNo">
    <property name="geometry">
     <rect>
      <x>877</x>
@@ -450,7 +423,7 @@ border-radius:30px;</string>
     <string>안돼</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_13">
+  <widget class="QPushButton" name="btnUsr1">
    <property name="geometry">
     <rect>
      <x>960</x>
@@ -463,7 +436,7 @@ border-radius:30px;</string>
     <string>사용자 설정</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_14">
+  <widget class="QPushButton" name="btnUsr2">
    <property name="geometry">
     <rect>
      <x>960</x>
@@ -476,27 +449,114 @@ border-radius:30px;</string>
     <string>사용자 설정</string>
    </property>
   </widget>
-  <zorder>label_3</zorder>
-  <zorder>label_2</zorder>
-  <zorder>btnMain</zorder>
-  <zorder>label_9</zorder>
-  <zorder>label_11</zorder>
-  <zorder>label_16</zorder>
-  <zorder>label_17</zorder>
-  <zorder>label_4</zorder>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>390</y>
+     <width>71</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnPlace1">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>60</y>
+     <width>81</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius:40px;
+background-color:yellow;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnPlace2">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>60</y>
+     <width>81</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnSave">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>60</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnPlace3">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>60</y>
+     <width>81</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>110</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>labelFrame</zorder>
+  <zorder>labelPulseIcon</zorder>
+  <zorder>btnMainPage</zorder>
+  <zorder>labelPulse</zorder>
+  <zorder>btnGpsPage</zorder>
+  <zorder>labelTempBody</zorder>
+  <zorder>labelTempC</zorder>
+  <zorder>labelCamera</zorder>
+  <zorder>btnRight</zorder>
+  <zorder>btnUp</zorder>
+  <zorder>btnDown</zorder>
+  <zorder>btnLeft</zorder>
+  <zorder>btnFeed</zorder>
+  <zorder>btnPlay</zorder>
+  <zorder>btnComeOn</zorder>
+  <zorder>btnGood</zorder>
+  <zorder>btnEat</zorder>
+  <zorder>btnNo</zorder>
+  <zorder>btnUsr1</zorder>
+  <zorder>btnUsr2</zorder>
+  <zorder>label</zorder>
+  <zorder>btnPlace1</zorder>
+  <zorder>btnPlace2</zorder>
+  <zorder>btnSave</zorder>
+  <zorder>btnPlace3</zorder>
   <zorder>pushButton</zorder>
-  <zorder>pushButton_2</zorder>
-  <zorder>pushButton_4</zorder>
-  <zorder>pushButton_5</zorder>
-  <zorder>pushButton_6</zorder>
-  <zorder>pushButton_7</zorder>
-  <zorder>pushButton_8</zorder>
-  <zorder>pushButton_9</zorder>
-  <zorder>pushButton_10</zorder>
-  <zorder>pushButton_11</zorder>
-  <zorder>pushButton_12</zorder>
-  <zorder>pushButton_13</zorder>
-  <zorder>pushButton_14</zorder>
  </widget>
  <resources/>
  <connections/>

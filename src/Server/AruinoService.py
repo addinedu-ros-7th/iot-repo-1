@@ -14,7 +14,7 @@ import socket
 
 from_class = uic.loadUiType("project/iot-repo-1/src/Client/Main.ui")[0]
 tcp_read = True
-
+ 
 
 class Camera(QThread):
     update = pyqtSignal()

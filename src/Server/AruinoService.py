@@ -115,6 +115,11 @@ class WindowClass(QMainWindow, from_class):
         tcp_client_read_flag = False
         sefial_read_flag = False
 
+        self.py_serial.close()
+        self.server_socket0.close()
+        self.server_socket1.close()
+        print("소켓 해제 완료")
+
     def fetchClientFirstInit(self, id):
         print("hello fetch")
         if self.remote:
@@ -353,6 +358,7 @@ if __name__=="__main__":
 
     # 시리얼 포트, 버레이트 설정
     # py_serial = serial.Serial("/dev/ttyACM0", 9600)
+    py_serial = 0
 
     # 서버 설정
     host0 = "192.168.2.29"  # 서버의 IP 주소 또는 도메인 이름
@@ -373,7 +379,7 @@ if __name__=="__main__":
     # server_socket1.settimeout(5.0)
 
     # 쓰레드 생성 및 시작
-    myWindows = WindowClass(0, server_socket0, server_socket1)
+    myWindows = WindowClass(py_serial, server_socket0, server_socket1)
     # serial_thread = threading.Thread(target=receiveSerialEvent,
     #                                  args=(py_serial, myWindows))
     tcp_controller_thread = threading.Thread(target=receiveTCPControllerEvent, 
@@ -382,17 +388,11 @@ if __name__=="__main__":
                                   args=(server_socket1, myWindows))
 
     myWindows.show()
-    #serial_thread.start()
+    # serial_thread.start()
     tcp_controller_thread.start()
     tcp_cient_thread.start()
 
-    # serial_thread.join()
-    # tcp_controller_thread.join()
-    # tcp_cient_thread.join()
-
-    # py_serial.close()
-    # server_socket0.close()
-    # server_socket1.close()
+    
     
     sys.exit(app.exec_())
 

@@ -17,6 +17,8 @@ import base64
 socket_thread_flag = True
 form_class = uic.loadUiType("Main.ui")[0]
 form_cam_Class = uic.loadUiType("Cam.ui")[0]
+form_setting_Class = uic.loadUiType("Setting.ui")[0]
+form_register_Class = uic.loadUiType("Register.ui")[0]
 
 server_address = "192.168.2.29"
 server_port = 8081
@@ -42,8 +44,9 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
         self.setIcon()
+
+        self.setWindowTitle("Aruino - Your Smart Pet Sitter")
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateTime)
@@ -52,15 +55,18 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
 
         self.updateTime()
 
+        self.petID = 1
+
         messages = []
         messages.append("Client First Init")
-        messages.append("1")
+        messages.append(str(self.petID))
 
         response = self.requestTCP(messages)
         response = response.split("&&")
         self.name = response[1]
         self.age = response[2]
         print("request :", response)
+
         self.initUI()
         
     def initUI(self):
@@ -93,22 +99,16 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         return response
     
     def fetchSyncData(self):
-        self.response = self.requestTCP(["Sync Data"])
+        response = self.requestTCP(["Sync Data"])
         # print("request :", self.response)
-        response = self.response.split("&&")
-        if response[0] == "Sync Data":
-            temp = response[2]
-            humidity = response[1]
+        self.response = response.split("&&")
+        sync_data = self.response
+        if sync_data[0] == "Sync Data":
+            temp = sync_data[2]
+            humidity = sync_data[1]
 
-        # print("temperature :", temp, "humidity :", humidity)
-
-    def fetchPulse(self):
-        try:
-            self.remote
-            self.cur = self.remote.cursor(buffered=True)
-            self.labelPulse.setText("00")
-        except:
-            self.labelPulse.setText("--")
+            self.labelTemp.setText(temp)
+            self.labelHumidity.setText(humidity)
 
     def updateTime(self):
         self.now = datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')
@@ -154,7 +154,138 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         pass
 
     def settingPage(self):
-        pass
+        self.setting = SettingWindowClass(self)
+        self.setting.show()
+
+class SettingWindowClass(QMainWindow, form_setting_Class):
+    def __init__(self, windowClass):
+        super().__init__()
+        self.setupUi(self)
+        self.initUI()
+
+        self.add_1 = False
+        self.add_2 = False
+
+        self.setWindowTitle("Setting")
+
+        self.windowClass = WindowClass()
+        self.petID = self.windowClass.petID
+
+    def initUI(self):
+        self.btnAdd2.hide()
+        self.timeFeeding2.hide()
+        self.timeFeeding3.hide()
+
+        self.btnClose.clicked.connect(self.hide)
+        self.btnUserRegister.clicked.connect(self.userRegister)
+        self.btnFeedSetting.clicked.connect(self.feedSetting)
+        self.btnAdd1.clicked.connect(self.Add)
+        self.btnAdd2.clicked.connect(self.Add)
+
+    def userRegister(self):
+        retval = QMessageBox.question(self, 'Register or Edit', '반려동물 정보를 등록해주세요.', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if retval == QMessageBox.Yes:
+            self.hide()
+            self.register = RegisterWindowClass(self)
+            self.register.show()
+        else:
+            pass
+
+    def Add(self):
+        if self.add_1 == False:
+            self.btnAdd2.show()
+            self.timeFeeding2.show()
+            self.add_1 = True
+        elif self.add_1 == True and self.add_2 == False:
+            self.timeFeeding3.show()
+            self.add_2 = True
+
+    def feedSetting(self):
+
+        feed_index1 = 1
+        feeding_amount1 = self.editFeed.text()
+        feeding_time1 = self.timeFeeding1.time()
+        feeding_time1 =feeding_time1.toPyTime()
+
+        feed_index2 = 2
+        feeding_amount2 = self.editFeed.text() if self.add_1 else 0
+        feeding_time2 = self.timeFeeding2.time() 
+        feeding_time2 =feeding_time2.toPyTime() if self.add_1 else None
+
+        feed_index3 = 3
+        feeding_amount3 = self.editFeed.text() if self.add_1 else 0
+        feeding_time3 = self.timeFeeding3.time()
+        feeding_time3 =feeding_time3.toPyTime() if self.add_1 else None
+
+        feeding_schedule = [self.petID, 
+            feed_index1, feeding_amount1, feeding_time1, 
+            feed_index2, feeding_amount2, feeding_time2, 
+            feed_index3, feeding_amount3, feeding_time3]
+
+        message = ["Feeding Schedule"]
+        for val in feeding_schedule:
+            message.append(str(val))
+        self.windowClass.sendTCP(message)
+
+    def mainPage(self):
+        self.hide()
+        self.main = WindowClass()
+        self.main.show()
+
+class RegisterWindowClass(QMainWindow, form_register_Class):
+    def __init__(self, windowClass):
+        super().__init__()
+        self.setupUi(self)
+        self.initUI()
+
+        self.setWindowTitle("Register")
+
+        self.windowClass = WindowClass()
+        self.petID = self.windowClass.petID
+
+    def initUI(self):
+        self.btnCancle.clicked.connect(self.returnSetting)
+        self.btnUserRegister.clicked.connect(self.userRegister)
+
+        self.cbSpecies.addItem("강아지")
+        self.cbSpecies.addItem("고양이")
+
+        self.birth = None
+
+        self.labelID.setText("1")
+        self.dateEditBirth.dateChanged.connect(self.getAge)
+
+    def getAge(self):
+        birth_qt = self.dateEditBirth.date()
+        birth = birth_qt.toPyDate()
+        today = datetime.today()
+        self.age = today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
+        self.labelAge.setText(str(self.age))
+        self.birth = birth
+
+    def userRegister(self):
+        name = self.editName.text()
+        birth = self.birth
+        weight = self.editWeight.text()
+        species_ko = self.cbSpecies.currentText()
+        contact_number = self.editContactNumber.text()
+        if species_ko == "강아지":
+            species = "dog"
+        elif species_ko == "고양이":
+            species = "cat"
+
+        user_register = [self.petID, name, birth, weight, species, contact_number]
+        message = ["User Register"]
+        for val in user_register:
+            message.append(str(val))
+        self.windowClass.sendTCP(message)
+
+        self.returnSetting()
+
+    def returnSetting(self):
+        self.hide()
+        self.setting = SettingWindowClass(self)
+        self.setting.show()
 
 class CamWindowClass(QMainWindow, form_cam_Class):
     def __init__(self, windowClass, ):

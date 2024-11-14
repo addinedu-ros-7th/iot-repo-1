@@ -83,6 +83,7 @@ class WindowClass(QMainWindow, from_class):
             password = "1234",
             database = "aruino"
         )
+        self.cur = self.remote.cursor(buffered=True)
 
         self.camera.update.connect(self.updateCamera)
         self.isCameraOn = True
@@ -134,26 +135,26 @@ class WindowClass(QMainWindow, from_class):
 
     def fetchClientFirstInit(self, id):
         print("hello fetch")
-        if self.remote:
-            self.cur = self.remote.cursor(buffered=True)
-            self.cur.execute(f"SELECT * FROM pet where id = {id}")
-            print(self.cur)
-            petInfo = self.cur.fetchall()
-            self.petID = petInfo[0][0]
-            self.petName = petInfo[0][1]
-            self.petBirth = petInfo[0][2]
-            self.petWeight = petInfo[0][3]
-            self.petSpecies = petInfo[0][4]
-            self.contactNumber = petInfo[0][5]
-            self.initUI()
+        self.cur.execute(f"SELECT * FROM pet where id = {id}")
+        print(self.cur)
+        petInfo = self.cur.fetchall()
+        self.petID = petInfo[0][0]
+        self.petName = petInfo[0][1]
+        self.petBirth = petInfo[0][2]
+        self.petWeight = petInfo[0][3]
+        self.petSpecies = petInfo[0][4]
+        self.contactNumber = petInfo[0][5]
+        self.initUI()
 
-            response = []
-            for val in petInfo[0]:
-                response.append(str(val))
-            print(response)
-            return "&&".join(response)
-        else:
-            print("not connected")
+        response = []
+        for val in petInfo[0]:
+            response.append(str(val))
+        print(response)
+        return "&&".join(response)
+
+    def requstDB(self, feed_index, feeding_amount, feeding_time):
+        self.cur.execute("INSERT INTO feeding VALUES (%s, %s, %s)", (feed_index, feeding_amount, feeding_time))
+        pass
 
 def receiveTCPControllerEvent(server_socket0, myWindows):
     global tcp_controller_read_flag, client_first_init_flag
@@ -279,6 +280,8 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     client_socket.sendall(length.encode('utf-8').ljust(64))
                     client_socket.send(stringData)
                     client_socket.send(stime.encode('utf-8').ljust(64))
+                elif parts[0] == "Request DB":
+                    pass
                 
             else:
                 response = "유효하지 않은 요청"

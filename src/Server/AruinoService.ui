@@ -1294,7 +1294,7 @@
    <property name="title">
     <string>test Buttons</string>
    </property>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="test_btn">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -1304,7 +1304,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>test_btn</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">

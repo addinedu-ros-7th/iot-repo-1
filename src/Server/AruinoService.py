@@ -21,6 +21,8 @@ tcp_controller_read_flag = True
 tcp_client_read_flag = True
 sefial_read_flag0 = True
 
+client_first_init_flag = False
+
 class Camera(QThread):
     update = pyqtSignal()
 
@@ -66,6 +68,8 @@ class WindowClass(QMainWindow, from_class):
         self.h = 0
         self.t = 0
         self.hic = 0
+        self.water_level = 0
+
         self.x = 0
         self.y = 0
 
@@ -164,7 +168,7 @@ class WindowClass(QMainWindow, from_class):
             print("not connected")
 
 def receiveTCPControllerEvent(server_socket0, myWindows):
-    global tcp_controller_read_flag
+    global tcp_controller_read_flag, client_first_init_flag
     print("tcp 8080 대기 중")
 
     # 클라이언트 연결 대기
@@ -188,14 +192,8 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
             if len(parts) != 0:
                 # key = parts[0]
                 # message = parts[1]
-                # response = f"어서와! {key}"
-                if parts[0] == "2":
-                    '''
-                    TODO:
-                    목걸이에서 최초 초기화 요청 신호를 보냄
-                    gui에 저장되어 있는 이름, 전화번호 등의 정보를 반환해줘야 함
-                    '''
-                elif parts[0] == "hello":
+                response = "01" + "Idle"
+                if parts[0] == "PetChecker Sync Data":
                     '''
                     TODO:
                     목걸이에서 위치, 심장박동, 체온, 가속도 등의 정보를 보냄
@@ -203,17 +201,21 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
 
                     심장박동, 체온 등 건강 이상 증세가 보이면, 반복되면, 대응해야함
                     '''
-                    myWindows.x = parts[1]
-                    myWindows.y = parts[2]
-                    print("x:", myWindows.x)
-                    print("y:", myWindows.y)
+                    # myWindows.x = parts[1]
+                    # myWindows.y = parts[2]
+                    # print("x:", myWindows.x)
+                    # print("y:", myWindows.y)
+                    print(parts[1:])
+
+                    if client_first_init_flag:
+                        client_first_init_flag = False
+                        response = "02" + str(myWindows.petName) + "&" + str(myWindows.contactNumber)
  
-                
             else:
-                response = "유효하지 않은 요청"
+                response = "00" + "MessageError"
 
             # 응답 클라이언트에게 전송
-            # client_socket.send(response.encode("utf-8"))
+            client_socket.send(response.encode("utf-8"))
 
         except Exception as e:
             print(f"오류 발생: {e}")
@@ -229,7 +231,7 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
     return
 
 def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
-    global tcp_client_read_flag
+    global tcp_client_read_flag, client_first_init_flag
     print("tcp 8081 대기 중")
     
     while tcp_client_read_flag is True:
@@ -257,6 +259,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     print("Pet ID:", parts[1])
                     response = myWindows.fetchClientFirstInit(parts[1])
                     client_socket.send(response.encode("utf-8"))
+                    client_first_init_flag = True
                     
                 elif parts[0] == "Sync Data":
                     # print(parts)
@@ -333,9 +336,7 @@ def sendSerial(serial_socket, key=0, message=""):
 def receiveSerialEvent(py_serial, myWindows):
     global sefial_read_flag0
     serial_read_data = ["start serial"]
-
     print("serial 대기 중")
-
     while sefial_read_flag0 is True:
         datos = py_serial.read_until().decode('ascii').strip()
         # print(datos)
@@ -345,12 +346,17 @@ def receiveSerialEvent(py_serial, myWindows):
             print(serial_read_data)
 
             # check Key
-            if serial_read_data[1] == '2':
+            if serial_read_data[1] == "Feeder Sencing Data":
                 # myWindows.labelTempBody.setText(serial_read_data[3][:2])
                 # db에 저장하면 좋은가
                 myWindows.h = serial_read_data[2]
                 myWindows.t = serial_read_data[3]
-                myWindows.hic = serial_read_data[4]
+                myWindows.hit = serial_read_data[4]
+                myWindows.water_level = serial_read_data[5]
+
+                myWindows.labelEnvTemp.setText(str(serial_read_data[3]) + "°C")
+                myWindows.labelEnvHum.setText(str(serial_read_data[2]) + "%")
+                myWindows.labelWaterBowlLevel.setText(str(serial_read_data[5]))
             elif serial_read_data[1] == "WebCam Control":
                 myWindows.up_down_angle = serial_read_data[2]
                 myWindows.left_right_angle = serial_read_data[3]
@@ -377,6 +383,7 @@ if __name__=="__main__":
 
     # 시리얼 포트, 버레이트 설정
     py_serial0 = serial.Serial("/dev/ttyACM0", 9600)
+    py_serial1 = serial.Serial("/dev/ttyACM1", 9600)
     # py_serial0 = 0
 
     # 서버 설정
@@ -401,13 +408,16 @@ if __name__=="__main__":
     myWindows = WindowClass(py_serial0, server_socket0, server_socket1)
     serial0_thread = threading.Thread(target=receiveSerialEvent,
                                      args=(py_serial0, myWindows))
+    serial1_thread = threading.Thread(target=receiveSerialEvent,
+                                     args=(py_serial1, myWindows))
     tcp_controller_thread = threading.Thread(target=receiveTCPControllerEvent, 
                                   args=(server_socket0, myWindows))
     tcp_cient_thread = threading.Thread(target=receiveTCPClientEvent, 
-                                  args=(server_socket1, myWindows, py_serial0))
+                                  args=(server_socket1, myWindows, py_serial1))
 
     myWindows.show()
     serial0_thread.start()
+    serial1_thread.start()
     tcp_controller_thread.start()
     tcp_cient_thread.start()
 

@@ -62,16 +62,20 @@ class WindowClass(QMainWindow, from_class):
         self.petSpecies = None
         self.contactNumber = None
 
+        # Comunicator
         self.up_down_angle = 90
         self.left_right_angle = 90
 
-        self.h = 0
-        self.t = 0
-        self.hic = 0
-        self.water_level = 0
+        # Feeder
+        self.feeder_humidity = 0
+        self.feeder_temperature = 0
+        self.feeder_hic = 0
+        self.feeder_water_level = 0
+        self.feeder_food_level = 0
 
-        self.x = 0
-        self.y = 0
+        # Pet Checker
+        self.pet_temperature = 0
+        self.pet_heart_rate = 0
 
         self.remote = mysql.connector.connect(
             host = "database-1.c3micoc2s6p8.ap-northeast-2.rds.amazonaws.com",
@@ -84,11 +88,12 @@ class WindowClass(QMainWindow, from_class):
         self.isCameraOn = True
         self.camera.running = True
         self.camera.start()
-        self.video = cv2.VideoCapture(-1)
+        self.video = cv2.VideoCapture("/dev/video2")
 
     def updateCamera(self):
         # self.label.setText("Camera Running : " + str(self.count))
         # self.count += 1
+        self.labelDateTime.setText(str(datetime.now())[:-7])
         retval, img = self.video.read()
 
         if retval:
@@ -147,23 +152,6 @@ class WindowClass(QMainWindow, from_class):
                 response.append(str(val))
             print(response)
             return "&&".join(response)
-        # if self.local:
-        #     self.cur = self.local.cursor(buffered=True)
-        #     sql = "SELECT * FROM pet where id = {id}".format(id=id)
-        #     self.cur.execute(sql)
-        #     petInfo = self.cur.fetchall()
-        #     self.petID = petInfo[0][0]
-        #     self.petName = petInfo[0][1]
-        #     self.petBirth = petInfo[0][2]
-        #     self.petWeight = petInfo[0][3]
-        #     self.petSpecies = petInfo[0][4]
-        #     self.contactNumber = petInfo[0][5]
-        #     print("name : ", self.petName)
-        #     print("birth : ", self.petBirth)
-        #     print("weight : ", self.petWeight)
-        #     print("species : ", self.petSpecies)
-        #     print("contactNumber : ", self.contactNumber)
-        #     self.initUI()
         else:
             print("not connected")
 
@@ -236,10 +224,11 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
     
     while tcp_client_read_flag is True:
         # 클라이언트 연결 대기
-        print("클라이언트 연결 대기")
+        # print("클라이언트 연결 대기")
         client_socket, client_address = server_socket1.accept()
+        myWindows.labelClientAddr.setText(client_address)
         # client_socket.settimeout(5.0)
-        print(f"클라이언트 {client_address}가 연결되었습니다.")
+        # print(f"클라이언트 {client_address}가 연결되었습니다.")
         if not tcp_client_read_flag:
             break
         try:
@@ -253,18 +242,11 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
             print(parts)
             if len(parts) != 0:
                 if parts[0] == "Client First Init":
-                    # print(parts)
-
-                    # TODO: DB에서 기본 정보 불러오기
-                    print("Pet ID:", parts[1])
                     response = myWindows.fetchClientFirstInit(parts[1])
                     client_socket.send(response.encode("utf-8"))
                     client_first_init_flag = True
                     
                 elif parts[0] == "Sync Data":
-                    # print(parts)
-
-                    # TODO: DB에서 기본 정보 불러오기
                     response = []
                     response.append("Sync Data")
                     response.append(str(myWindows.h))
@@ -273,33 +255,24 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     response.append(str(myWindows.x))
                     response.append(str(myWindows.y))
                     response = "&&".join(response)
-                    print("response:", response)
 
                     client_socket.send(response.encode("utf-8"))
                 elif parts[0] == "WebCam Control":
-                    '''
-                    TODO:
-                    클라이언트에서 웹캠 컨트롤 요청
-                    '''
-                    print(f"웹캠을 {parts[1]} 방향으로 이동 {parts[2]}")
-                    print(parts)
-
                     key10 = 1 if parts[1] == "up" else 2 if parts[1] == "down" else 3 if parts[1] == "left" else 4
                     key01 = 1 if parts[2] == "start" else 0
 
                     key = key10 * 10 + key01
                     message = parts[0] # "WebCam Control"
                     sendSerial(serial_socket, key, message)
-
                 elif parts[0] == "Request WebCam Image":
 
                     resize_frame = cv2.resize(myWindows.img, dsize=(670, 520), interpolation=cv2.INTER_AREA)
 
-                    now = time.localtime()
+                    # now = time.localtime()
                     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
                     encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
-                    result, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
+                    _, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
                     data = np.array(imgencode)
                     stringData = base64.b64encode(data)
                     length = str(len(stringData))
@@ -320,7 +293,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
         finally:
             pass
             # 클라이언트 소켓 닫기
-            print("클라이언트 연결종료")
+            # print("클라이언트 연결종료")
             client_socket.close()
     
     server_socket1.close()
@@ -342,8 +315,8 @@ def receiveSerialEvent(py_serial, myWindows):
         # print(datos)
         serial_read_data.append(datos)
         if datos == "end serial":
-            print("Serial Read!!")
-            print(serial_read_data)
+            # print("Serial Read!!")
+            # print("Serial Read!!", serial_read_data)
 
             # check Key
             if serial_read_data[1] == "Feeder Sencing Data":
@@ -353,6 +326,7 @@ def receiveSerialEvent(py_serial, myWindows):
                 myWindows.t = serial_read_data[3]
                 myWindows.hit = serial_read_data[4]
                 myWindows.water_level = serial_read_data[5]
+                # myWindows.food_level = serial_read_data[6]
 
                 myWindows.labelEnvTemp.setText(str(serial_read_data[3]) + "°C")
                 myWindows.labelEnvHum.setText(str(serial_read_data[2]) + "%")
@@ -364,7 +338,7 @@ def receiveSerialEvent(py_serial, myWindows):
                 myWindows.labelCamCurV.setText(serial_read_data[2])
                 myWindows.labelCamCurH.setText(serial_read_data[3])
 
-                print(myWindows.up_down_angle, myWindows.left_right_angle)
+                # print(myWindows.up_down_angle, myWindows.left_right_angle)
             elif serial_read_data[1] == '3':
                 '''
                 TODO:
@@ -374,7 +348,6 @@ def receiveSerialEvent(py_serial, myWindows):
                 pass
 
             serial_read_data = ["start serial"]
-
     return
 
 if __name__=="__main__":
@@ -420,8 +393,6 @@ if __name__=="__main__":
     serial1_thread.start()
     tcp_controller_thread.start()
     tcp_cient_thread.start()
-
-    
     sys.exit(app.exec_())
 
 

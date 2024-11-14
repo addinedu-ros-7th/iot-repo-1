@@ -56,8 +56,8 @@ void loop() {
       if (left_flag) left_right_angle++;
       if (right_flag) left_right_angle--;
 
-      if (up_down_angle > 175) up_down_angle = 175;
-      if (up_down_angle < 5) up_down_angle = 5;
+      if (up_down_angle > 135) up_down_angle = 135;
+      if (up_down_angle < 45) up_down_angle = 45;
 
       if (left_right_angle > 175) left_right_angle = 175;
       if (left_right_angle < 5) left_right_angle = 5;

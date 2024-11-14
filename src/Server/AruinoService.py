@@ -19,7 +19,7 @@ import base64
 from_class = uic.loadUiType("project/iot-repo-1/src/Server/AruinoService.ui")[0]
 tcp_controller_read_flag = True
 tcp_client_read_flag = True
-sefial_read_flag = True
+sefial_read_flag0 = True
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -59,6 +59,9 @@ class WindowClass(QMainWindow, from_class):
         self.petWeight = None
         self.petSpecies = None
         self.contactNumber = None
+
+        self.up_down_angle = 90
+        self.left_right_angle = 90
 
         self.h = 0
         self.t = 0
@@ -109,11 +112,11 @@ class WindowClass(QMainWindow, from_class):
         self.labelContactNumber.setText(str(self.contactNumber))
 
     def closeEvent(self, event):
-        global tcp_controller_read_flag, tcp_client_read_flag, sefial_read_flag
+        global tcp_controller_read_flag, tcp_client_read_flag, sefial_read_flag0
         print("소켓 해제")
         tcp_controller_read_flag = False
         tcp_client_read_flag = False
-        sefial_read_flag = False
+        sefial_read_flag0 = False
 
         self.py_serial.close()
         self.server_socket0.close()
@@ -225,7 +228,7 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
     print("TCP0 종료")
     return
 
-def receiveTCPClientEvent(server_socket1, myWindows):
+def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
     global tcp_client_read_flag
     print("tcp 8081 대기 중")
     
@@ -277,6 +280,14 @@ def receiveTCPClientEvent(server_socket1, myWindows):
                     '''
                     print(f"웹캠을 {parts[1]} 방향으로 이동 {parts[2]}")
                     print(parts)
+
+                    key10 = 1 if parts[1] == "up" else 2 if parts[1] == "down" else 3 if parts[1] == "left" else 4
+                    key01 = 1 if parts[2] == "start" else 0
+
+                    key = key10 * 10 + key01
+                    message = parts[0] # "WebCam Control"
+                    sendSerial(serial_socket, key, message)
+
                 elif parts[0] == "Request WebCam Image":
 
                     resize_frame = cv2.resize(myWindows.img, dsize=(670, 520), interpolation=cv2.INTER_AREA)
@@ -314,18 +325,18 @@ def receiveTCPClientEvent(server_socket1, myWindows):
     print("TCP1 종료")
     return
 
-def sendSerial(key=0, message=""):
+def sendSerial(serial_socket, key=0, message=""):
     output = f"{key:02}" + message
-    py_serial.write(output.encode())
+    serial_socket.write(output.encode())
     time.sleep(0.1)
 
 def receiveSerialEvent(py_serial, myWindows):
-    global sefial_read_flag
+    global sefial_read_flag0
     serial_read_data = ["start serial"]
 
     print("serial 대기 중")
 
-    while sefial_read_flag is True:
+    while sefial_read_flag0 is True:
         datos = py_serial.read_until().decode('ascii').strip()
         # print(datos)
         serial_read_data.append(datos)
@@ -340,6 +351,14 @@ def receiveSerialEvent(py_serial, myWindows):
                 myWindows.h = serial_read_data[2]
                 myWindows.t = serial_read_data[3]
                 myWindows.hic = serial_read_data[4]
+            elif serial_read_data[1] == "WebCam Control":
+                myWindows.up_down_angle = serial_read_data[2]
+                myWindows.left_right_angle = serial_read_data[3]
+
+                myWindows.labelCamCurV.setText(serial_read_data[2])
+                myWindows.labelCamCurH.setText(serial_read_data[3])
+
+                print(myWindows.up_down_angle, myWindows.left_right_angle)
             elif serial_read_data[1] == '3':
                 '''
                 TODO:
@@ -357,8 +376,8 @@ if __name__=="__main__":
     app = QApplication(sys.argv)
 
     # 시리얼 포트, 버레이트 설정
-    # py_serial = serial.Serial("/dev/ttyACM0", 9600)
-    py_serial = 0
+    py_serial0 = serial.Serial("/dev/ttyACM0", 9600)
+    # py_serial0 = 0
 
     # 서버 설정
     host0 = "192.168.2.29"  # 서버의 IP 주소 또는 도메인 이름
@@ -379,20 +398,19 @@ if __name__=="__main__":
     # server_socket1.settimeout(5.0)
 
     # 쓰레드 생성 및 시작
-    myWindows = WindowClass(py_serial, server_socket0, server_socket1)
-    # serial_thread = threading.Thread(target=receiveSerialEvent,
-    #                                  args=(py_serial, myWindows))
+    myWindows = WindowClass(py_serial0, server_socket0, server_socket1)
+    serial0_thread = threading.Thread(target=receiveSerialEvent,
+                                     args=(py_serial0, myWindows))
     tcp_controller_thread = threading.Thread(target=receiveTCPControllerEvent, 
                                   args=(server_socket0, myWindows))
     tcp_cient_thread = threading.Thread(target=receiveTCPClientEvent, 
-                                  args=(server_socket1, myWindows))
+                                  args=(server_socket1, myWindows, py_serial0))
 
     myWindows.show()
-    # serial_thread.start()
+    serial0_thread.start()
     tcp_controller_thread.start()
     tcp_cient_thread.start()
 
-    
     
     sys.exit(app.exec_())
 

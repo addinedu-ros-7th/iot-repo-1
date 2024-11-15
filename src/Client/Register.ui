@@ -21,7 +21,7 @@
    <property name="geometry">
     <rect>
      <x>190</x>
-     <y>360</y>
+     <y>370</y>
      <width>111</width>
      <height>51</height>
     </rect>
@@ -37,14 +37,14 @@ QPushButton:hover{background-color:#F5C26B; border-width:10px;
 border-radius:20px;}</string>
    </property>
    <property name="text">
-    <string>반려동물 등록</string>
+    <string>등록정보 수정</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnCancle">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>360</y>
+     <x>330</x>
+     <y>370</y>
      <width>51</width>
      <height>51</height>
     </rect>
@@ -75,11 +75,11 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
-    <string>1</string>
+    <string>0</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -164,27 +164,6 @@ border-radius:20px;}</string>
     <string>몸무게</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelContactNumber">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>310</y>
-     <width>101</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Ubuntu</family>
-    </font>
-   </property>
-   <property name="text">
-    <string>010-0000-0000</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
   <widget class="QLabel" name="labelContactNumberInfo">
    <property name="geometry">
     <rect>
@@ -238,11 +217,11 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
-    <string>10</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -298,7 +277,7 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>12</pointsize>
     </font>
    </property>
    <property name="alignment">
@@ -385,8 +364,11 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="maxLength">
+    <number>13</number>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

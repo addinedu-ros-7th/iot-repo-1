@@ -115,32 +115,6 @@ border-style:solid;</string>
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="btnGpsPage">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>60</y>
-     <width>81</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color:white;
-border-radius:40px;
-border-color:#4169E1;
-border-width:10px;
-border-style:solid;</string>
-   </property>
-   <property name="text">
-    <string>어디있니</string>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
   <widget class="QLabel" name="labelTempBody">
    <property name="geometry">
     <rect>
@@ -488,11 +462,15 @@ background-color:yellow;</string>
      <height>81</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius:40px;
+background-color:yellow;</string>
+   </property>
    <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnSave">
+  <widget class="QPushButton" name="btnSavePlace">
    <property name="geometry">
     <rect>
      <x>620</x>
@@ -501,8 +479,12 @@ background-color:yellow;</string>
      <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-style:outset;
+</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>장소 저장</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPlace3">
@@ -514,11 +496,15 @@ background-color:yellow;</string>
      <height>81</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius:40px;
+background-color:yellow;</string>
+   </property>
    <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="pushSaveSound">
    <property name="geometry">
     <rect>
      <x>620</x>
@@ -527,15 +513,17 @@ background-color:yellow;</string>
      <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-style:outset;</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>사운드 저장</string>
    </property>
   </widget>
   <zorder>labelFrame</zorder>
   <zorder>labelPulseIcon</zorder>
   <zorder>btnMainPage</zorder>
   <zorder>labelPulse</zorder>
-  <zorder>btnGpsPage</zorder>
   <zorder>labelTempBody</zorder>
   <zorder>labelTempC</zorder>
   <zorder>labelCamera</zorder>
@@ -554,9 +542,9 @@ background-color:yellow;</string>
   <zorder>label</zorder>
   <zorder>btnPlace1</zorder>
   <zorder>btnPlace2</zorder>
-  <zorder>btnSave</zorder>
+  <zorder>btnSavePlace</zorder>
   <zorder>btnPlace3</zorder>
-  <zorder>pushButton</zorder>
+  <zorder>pushSaveSound</zorder>
  </widget>
  <resources/>
  <connections/>

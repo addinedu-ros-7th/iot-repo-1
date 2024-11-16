@@ -26,6 +26,70 @@ def getAge(dateBirth):
     age = today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
     return str(age)
 
+class Pet():
+    def __init__(self, name, birth, weight, species, contact_number):
+        self._name = name
+        self._birth = birth
+        self._weight = weight
+        self._species = species
+        self._contact_number = contact_number
+        self._age
+
+    @property
+    def age(self):
+        birth = datetime.strptime(self._birth, '%Y-%m-%d').date()
+        today = datetime.today()
+        age = today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
+        return str(age)
+    
+    def changeName(self, name):
+        self._name = name
+
+class TCP():
+    def send(self, messages):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+        client_socket.close()
+
+    def request(self, messages):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+        response = client_socket.recv(1024).decode('utf-8')
+        client_socket.close()
+        return response
+    
+    def split(self, response):
+        return response.split("&&")
+    
+class camTCP(TCP):
+    def request(self, messages, iscamera=False):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_address, server_port))
+        client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
+
+        if not iscamera:
+            response = client_socket.recv(1024).decode('utf-8')
+            client_socket.close()
+            return response
+        else:
+            length = self.recvall(client_socket, 64)
+            length1 = length.decode('utf-8')
+            stringData = self.recvall(client_socket, int(length1))
+            data = np.frombuffer(base64.b64decode(stringData), np.uint8)
+            decimg = cv2.imdecode(data, 1)
+            return decimg
+        
+    def recvall(self, sock, count):
+        buf = b''
+        while count:
+            newbuf = sock.recv(count)
+            if not newbuf: return None
+            buf += newbuf
+            count -= len(newbuf)
+        return buf
+        
 class Camera(QThread):
     update = pyqtSignal()
 
@@ -49,15 +113,23 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.setupUi(self)
         self.setIcon()
 
+        # print("Main Window", id(self))
+
         self.setWindowTitle("Aruino - Your Smart Pet Sitter")
+
+        try: 
+            print("Main - id_flag :", self.id_flag)
+            print("Main - petID :", self.petID)
+        except AttributeError:
+            print("lost id_flag")
+            self.id_flag = False
+            print("Main - id_flag :", self.id_flag)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateTime)
         self.timer.timeout.connect(self.fetchSyncData)
-         # 1000ms = 1s
 
         self.updateTime()
-        self.id_flag = False
 
         self.labelDateTime.hide()
         self.btnUser1.clicked.connect(lambda: self.userSelect(1))
@@ -78,10 +150,10 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
                 self.petID = "4"
 
         self.id_flag = True
-        print(self.id_flag)
+        print("userSelect - id_flag :", self.id_flag)
 
         self.firstInit()
-        self.timer.start(1000)
+        # self.timer.start(1000)
 
     def firstInit(self):
         messages = []
@@ -103,10 +175,6 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
             self.feeding_times.append(self.petInfo[i+6])
 
         self.initUI()
-        if self.species == "cat":
-            self.labelDog.setPixmap(QPixmap("../../data/icon/cat.png"))
-            self.btnHeart.move(470,300)
-            self.btnHeart.setIconSize(QSize(50, 50))
         
     def initUI(self):
         self.labelDateTime.show()
@@ -120,17 +188,25 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
 
         self.btnCameraPage.clicked.connect(self.cameraPage)
         self.btnSetting.clicked.connect(self.settingPage)
-        self.btnGpsPage.clicked.connect(self.gpsPage)
         self.btnPlayPage.clicked.connect(self.playPage)
-
-        self.btnFeed.clicked.connect(self.feeding)
 
         self.labelFood.hide()
 
         self.labelName.setText(self.name)
         self.labelAge.setText(self.age)
+        if self.species == "cat":
+            self.labelDog.setPixmap(QPixmap("../../data/icon/cat.png"))
+            self.btnHeart.move(470,300)
+            self.btnHeart.setIconSize(QSize(50, 50))
+        else:
+            self.labelDog.setPixmap(QPixmap("../../data/icon/dog-sit.png"))
+            self.btnHeart.move(420,240)
+            self.btnHeart.setIcon(QIcon("../../data/icon/heart.png"))
+
         self.labelNameInfo.hide()
         self.labelAgeInfo.hide()
+
+        self.timer.start(1000)
 
     def sendTCP(self, messages):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -144,7 +220,6 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         client_socket.send(f"{'&&'.join(messages)}".encode('utf-8'))
 
         response = client_socket.recv(1024).decode('utf-8')
-        # print("response :", response)
         client_socket.close()
         return response
     
@@ -160,6 +235,8 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
             self.labelTemp.setText(temp)
             self.labelHumid.setText(humidity)
 
+            # print("getting sync data")
+
     def updateTime(self):
         self.now = datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')
         self.labelDateTime.setText(self.now)
@@ -174,9 +251,6 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.btnCameraPage.setIconSize(QSize(50, 50))
         self.btnPlayPage.setIcon(QIcon("../../data/icon/file.png"))
         self.btnPlayPage.setIconSize(QSize(50, 50))
-        self.btnGpsPage.setFont(QFont("ubuntu", 25, weight=QFont.Bold))
-        self.btnGpsPage.setText("GPS")
-        self.btnGpsPage.hide()
         self.btnSetting.setIcon(QIcon("../../data/icon/setting.png"))
 
         self.labelDog.setPixmap(QPixmap("../../data/icon/dog-sit.png")) 
@@ -193,17 +267,10 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.labelPawIcon.setPixmap(QPixmap("../../data/icon/paws.png"))
         self.labelPawIcon2.setPixmap(QPixmap("../../data/icon/paws.png"))
 
-    def feeding(self):
-        self.labelFoodEmpty.hide()
-        self.labelFood.show()
-
     def cameraPage(self):
-        self.hide()
         self.cam = CamWindowClass(self)
         self.cam.show()
-
-    def gpsPage(self):
-        pass
+        self.hide()
 
     def playPage(self):
         pass
@@ -223,23 +290,14 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
         super().__init__()
         self.setupUi(self)
 
+        # print("Setting Window", id(self))
+
         self.add_1 = True
         self.add_2 = False
         self.add_3 = False
         self.add_4 = False
         self.add_5 = False
         
-        self.setWindowTitle("Setting")
-
-        self.windowClass = windowClass # WindowClass()
-        self.id_flag = self.windowClass.id_flag
-        self.petID = self.windowClass.petID
-        # self.petInfo = self.windowClass.petInfo
-        
-        self.initUI()
-
-    def initUI(self):
-
         self.btnAdds = [
             self.btnAdd1,
             self.btnAdd2,
@@ -247,6 +305,7 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
             self.btnAdd4,
             self.btnAdd5
         ]
+
         self.timeFeedings = [
             self.timeFeeding1,
             self.timeFeeding2,
@@ -255,13 +314,20 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
             self.timeFeeding5
         ]
 
+        self.setWindowTitle("Setting")
+
+        self.windowClass = windowClass
+
+        print("Setting Page - id_flag :", self.windowClass.id_flag)
+        
+        self.initUI()
+
+    def initUI(self):
         for i in range(5):
             self.btnAdds[i].hide()
             self.timeFeedings[i].hide()
             self.timeFeedings[i].timeChanged.connect(self.setTimeFeeding)
-
-
-        print(len(self.windowClass.feeding_times))
+         
         if self.windowClass.feeding_times:
             for i, val in enumerate(self.windowClass.feeding_times):
                 self.timeFeedings[i].show()
@@ -297,7 +363,7 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
         retval = QMessageBox.question(self, 'User Edit', '반려동물 정보를 수정하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if retval == QMessageBox.Yes:
             self.hide()
-            self.register = RegisterWindowClass(self)
+            self.register = RegisterWindowClass(self.windowClass)
             self.register.show()
         else:
             pass
@@ -354,35 +420,17 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
             self.btnAdds[len_times + 1].clicked.connect(self.Add)
 
     def feedSetting(self):
+        feeding_schedule = ["Feeding Schedule", self.windowClass.petID]
 
-        feed_index1 = 1
-        feeding_amount1 = self.editFeed.text()
-        feeding_time1 = self.timeFeeding1.time()
-        feeding_time1 =feeding_time1.toPyTime()
+        for i in range(len(self.windowClass.feeding_times)):
+            feeding_schedule.append(self.windowClass.feeding_times[i])
 
-        feed_index2 = 2
-        feeding_amount2 = self.editFeed.text() if self.add_1 else 0
-        feeding_time2 = self.timeFeeding2.time() 
-        feeding_time2 =feeding_time2.toPyTime() if self.add_1 else None
-
-        feed_index3 = 3
-        feeding_amount3 = self.editFeed.text() if self.add_1 else 0
-        feeding_time3 = self.timeFeeding3.time()
-        feeding_time3 =feeding_time3.toPyTime() if self.add_1 else None
-
-        feeding_schedule = [self.petID, 
-            feed_index1, feeding_amount1, feeding_time1, 
-            feed_index2, feeding_amount2, feeding_time2, 
-            feed_index3, feeding_amount3, feeding_time3]
-
-        message = ["Feeding Schedule"]
-        for val in feeding_schedule:
-            message.append(str(val))
+        message = feeding_schedule
         self.windowClass.sendTCP(message)
 
     def mainPage(self):
         self.hide()
-        self.main = WindowClass()
+        self.main = self.windowClass
         self.main.show()
 
 class RegisterWindowClass(QMainWindow, form_register_Class):
@@ -390,15 +438,23 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
         super().__init__()
         self.setupUi(self)
 
-        self.setWindowTitle("Register")
+        # print("Register Window", id(self))
 
+        self.setWindowTitle("Register")
+        print("Register Page - windowClass :", windowClass)
         self.windowClass = windowClass
-        print(self.windowClass.id_flag)
+        print("Register Page - windowClass.id_flag :", self.windowClass.id_flag)
+
         self.initUI()
 
     def initUI(self):
         self.btnCancle.clicked.connect(self.returnSetting)
         self.btnUserRegister.clicked.connect(self.userRegister)
+
+        if self.windowClass.id_flag == True:
+            self.btnUserRegister.setText("등록정보 수정")
+        else:
+            self.btnUserRegister.setText("반려동물 등록")
 
         self.cbSpecies.addItem("강아지")
         self.cbSpecies.addItem("고양이")
@@ -406,10 +462,10 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
         if self.windowClass.id_flag == True:
             self.labelID.setText(self.windowClass.petID)
             self.editName.setText(self.windowClass.name)
-            self.dateEditBirth.setText(self.windowClass.birth)
+            self.dateEditBirth.setDate(datetime.strptime(self.windowClass.birth, '%Y-%m-%d').date())
             self.labelAge.setText(self.windowClass.age)
             self.editWeight.setText(self.windowClass.weight)
-            self.cbSpecies.setText(self.windowClass.species)
+            self.cbSpecies.setCurrentIndex(0 if self.windowClass.species == "dog" else 1) #self.cbSpecies.setCurrentText(self.windowClass.species)
             self.editContactNumber.setText(self.windowClass.contact_number)
 
         self.labelID.setText("1")
@@ -431,6 +487,8 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
             self.editContactNumber.setText(tmp + "-")
         elif len(tmp) == 8 and self.len_prev == 7:
             self.editContactNumber.setText(tmp + "-")
+        elif len(tmp) == 8 and self.len_prev == 9:
+            self.editContactNumber.setText(tmp + "-")
         self.len_prev = len(tmp)
 
     def userRegister(self):
@@ -444,26 +502,61 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
         elif species_ko == "고양이":
             species = "cat"
 
-        user_register = [self.petID, name, birth, weight, species, contact_number]
-        message = ["User Register"]
-        for val in user_register:
-            message.append(str(val))
-        self.windowClass.sendTCP(message)
+        if name == "" or birth == "" or weight == "" or species == "" or contact_number == "":
+            QMessageBox.warning(self, "Warning", "빈칸을 채워주세요")
+            return
 
-        self.returnSetting()
+        if self.windowClass.id_flag == True:
+            user_register = [self.windowClass.petID, name, birth, weight, species, contact_number]
+            message = ["User Modify"]
+            for val in user_register:
+                message.append(str(val))
+            response = self.windowClass.requestTCP(message)
+            response = response.split("&&")
+            print("request :", response)
+            self.windowClass.petID = response[0]
+            self.windowClass.name = response[1]
+            self.windowClass.birth = response[2]
+            self.windowClass.weight = response[3]
+            self.windowClass.species = response[4]
+            self.windowClass.contact_number = response[5]
+            self.windowClass.age = getAge(self.windowClass.birth)
+
+            self.initUI()
+            self.windowClass.initUI()
+            self.returnSetting()
+        else:
+            user_register = [name, birth, weight, species, contact_number]
+            message = ["User Register"]
+            for val in user_register:
+                message.append(str(val))
+            response = self.windowClass.requestTCP(message)
+            response = response.split("&&")
+            print(response)
+            self.windowClass.petID = response[0]
+            self.windowClass.name = response[1]
+            self.windowClass.birth = response[2]
+            self.windowClass.weight = response[3]
+            self.windowClass.species = response[4]
+            self.windowClass.contact_number = response[5]
+            self.windowClass.age = getAge(self.windowClass.birth)
+
+            self.windowClass.initUI()
+            self.windowClass.id_flag = True
+            self.windowClass.feeding_times = []
+            self.hide()
 
     def returnSetting(self):
         self.hide()
         if self.windowClass.id_flag == True:
             self.setting = SettingWindowClass(self.windowClass)
+            self.setting.initUI()
             self.setting.show()
 
 class CamWindowClass(QMainWindow, form_cam_Class):
     def __init__(self, windowClass, ):
         super().__init__()
         self.setupUi(self)
-        self.initUI()
-        self.setIcon()
         self.windowClass = windowClass
 
         self.isCameraOn = False
@@ -474,6 +567,25 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.isCameraOn = True
         self.camera.running = True
         self.camera.start()
+
+        self.btnPlaces = [
+            self.btnPlace1,
+            self.btnPlace2,
+            self.btnPlace3
+        ]
+
+        self.btnSounds = [
+            self.btnGood,
+            self.btnComeOn,
+            self.btnSound3,
+            self.btnSound4,
+            self.btnSound5,
+            self.btnSound6
+        ]
+
+        self.initUI()
+        self.setIcon()
+        self.fetchPlaces()
 
     def initUI(self):
         self.btnMainPage.clicked.connect(self.mainPage)
@@ -499,15 +611,15 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.btnGood.clicked.connect(lambda : self.sendSound("good"))
         self.btnComeOn.clicked.connect(lambda : self.sendSound("comeon"))
 
-        self.btnPlace1.hide()
-        self.btnPlace2.hide()
-        self.btnPlace3.hide()
-        
-        self.btnGpsPage.hide()
+        # for soundbtn in self.btnSounds:
+        #     soundbtn.hide()
 
-        self.btnPlace1.clicked.connect(lambda : self.roadPlace(1))
-        self.btnPlace2.clicked.connect(lambda : self.roadPlace(2))
-        self.btnPlace3.clicked.connect(lambda : self.roadPlace(3))
+        self.btnPlace1.clicked.connect(lambda : self.loadPlace(0))
+        self.btnPlace2.clicked.connect(lambda : self.loadPlace(1))
+        self.btnPlace3.clicked.connect(lambda : self.loadPlace(2))
+
+        self.btnSavePlace.clicked.connect(self.savePlace)
+        self.btnDeletePlace.clicked.connect(self.deletePlace)
 
     def setIcon(self):
         self.btnMainPage.setIcon(QIcon("../../data/icon/home.png"))
@@ -517,13 +629,72 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.btnLeft.setIcon(QIcon("../../data/icon/play.png"))
         self.btnFeed.setIcon(QIcon("../../data/icon/pet-food.png"))
         self.btnPlay.setIcon(QIcon("../../data/icon/ball.png"))
+
+        for i in range(len(self.btnSounds)):
+            self.btnSounds[i].setText("-")
                
         self.labelPulseIcon.setPixmap(QPixmap("../../data/icon/pulse.png"))
 
-    def roadPlace(self, key):
+    def fetchPlaces(self):
+        messages = ["WebCam Fetch Place"]
+        messages.append(self.windowClass.petID)
+        response = self.requestTCP(messages)
+        places = response.split("&&")
+        self.place_id_list = []
+        self.place_name_list = []
+        print(len(places))
+
+        if len(places) > 1:
+            for i in range(0, len(places), 2):
+                self.place_id_list.append(places[i])
+                self.place_name_list.append(places[i+1])
+
+        for i in range(len(self.place_id_list)):
+            self.btnPlaces[i].setStyleSheet("background-color:white;\
+                                            border-radius:40px;\
+                                            border-color:#4169E1;\
+                                            border-width:7px;\
+                                            border-style:solid;")
+            self.btnPlaces[i].setText(self.place_name_list[i])
+
+    def loadPlace(self, key):
         messages = ["WebCam Control Saved Place"]
-        messages.append(str(key))
+        messages.append(self.windowClass.petID)
+        messages.append(self.place_id_list[key])
         self.sendTCP(messages)
+
+    def savePlace(self):
+        text, ok = QInputDialog.getText(self, 'Save Place', '장소를 기억할 이름을 입력해주세요.')
+
+        if ok and text:
+            self.place_name = text
+            messages = ["WebCam Save Place"]
+            messages.append(self.windowClass.petID)
+            messages.append(self.place_name)
+            self.sendTCP(messages)
+
+            self.fetchPlaces()
+
+    def deletePlace(self):
+        item, ok = QInputDialog.getItem(self, 'Delete Place', '삭제할 장소를 선택해주세요', self.place_name_list, 0, False)
+
+        if ok and item:
+            self.place_name = item
+
+            for i in range(len(self.place_name_list)):
+                if self.place_name_list[i] == item:
+                    item = self.place_id_list[i]
+                    break
+
+            messages = ["WebCam Delete Place"]
+            messages.append(self.windowClass.petID)
+            messages.append(self.place_id_list[i])
+            self.sendTCP(messages)
+
+            for i in range(3):
+                self.btnPlaces[i].hide()
+
+            self.fetchPlaces()
     
     def sendSound(self, key):
         self.sound = QSoundEffect()
@@ -578,10 +749,6 @@ class CamWindowClass(QMainWindow, form_cam_Class):
             length = self.recvall(client_socket, 64)
             length1 = length.decode('utf-8')
             stringData = self.recvall(client_socket, int(length1))
-            stime = self.recvall(client_socket, 64)
-            # print('camera send time: ' + stime.decode('utf-8'))
-            # now = time.localtime()
-            # print('receive time: ' + datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f'))
             data = np.frombuffer(base64.b64decode(stringData), np.uint8)
             decimg = cv2.imdecode(data, 1)
             return decimg
@@ -594,8 +761,7 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.labelCamera.setPixmap(self.pixmap)
 
     def mainPage(self):
-        self.hide()
-        self.main = WindowClass()
+        self.main = self.windowClass
         self.isCameraOn = False
         self.camera.stop()
 
@@ -605,12 +771,9 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.main.btnUser3.hide()
         self.main.btnUser4.hide()
         self.main.btnRegister.hide()
-        self.main.show()
 
-def receiveTCPEvent(client_socket, windowClass):
-    while socket_thread_flag == True:
-        data = client_socket.recv(1024).decode('utf-8')
-        print(data)
+        self.main.show()
+        self.hide()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)     

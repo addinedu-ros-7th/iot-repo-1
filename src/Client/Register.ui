@@ -75,7 +75,7 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>14</pointsize>
+     <pointsize>13</pointsize>
     </font>
    </property>
    <property name="text">
@@ -217,7 +217,7 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>14</pointsize>
+     <pointsize>13</pointsize>
     </font>
    </property>
    <property name="text">
@@ -258,7 +258,7 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>12</pointsize>
     </font>
    </property>
    <property name="alignment">
@@ -329,7 +329,7 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>12</pointsize>
     </font>
    </property>
    <property name="alignment">
@@ -348,7 +348,7 @@ border-radius:20px;}</string>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>15</pointsize>
+     <pointsize>13</pointsize>
     </font>
    </property>
   </widget>

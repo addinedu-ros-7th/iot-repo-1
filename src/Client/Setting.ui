@@ -478,9 +478,9 @@
    <property name="geometry">
     <rect>
      <x>90</x>
-     <y>370</y>
+     <y>380</y>
      <width>111</width>
-     <height>71</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -501,9 +501,9 @@ border-radius:20px;}</string>
    <property name="geometry">
     <rect>
      <x>360</x>
-     <y>370</y>
+     <y>380</y>
      <width>111</width>
-     <height>71</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">

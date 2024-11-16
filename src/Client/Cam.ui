@@ -20,7 +20,7 @@
   <widget class="QLabel" name="labelPulseIcon">
    <property name="geometry">
     <rect>
-     <x>900</x>
+     <x>910</x>
      <y>70</y>
      <width>71</width>
      <height>71</height>
@@ -44,7 +44,7 @@ background-color:transparent;
   <widget class="QLabel" name="labelFrame">
    <property name="geometry">
     <rect>
-     <x>770</x>
+     <x>780</x>
      <y>60</y>
      <width>291</width>
      <height>91</height>
@@ -71,7 +71,7 @@ border-radius:30px;</string>
     <string notr="true">background-color:white;
 border-radius:40px;
 border-color:#4169E1;
-border-width:10px;
+border-width:7px;
 border-style:solid;</string>
    </property>
    <property name="text">
@@ -91,7 +91,7 @@ border-style:solid;</string>
   <widget class="QLabel" name="labelPulse">
    <property name="geometry">
     <rect>
-     <x>980</x>
+     <x>1000</x>
      <y>80</y>
      <width>51</width>
      <height>51</height>
@@ -118,7 +118,7 @@ border-style:solid;</string>
   <widget class="QLabel" name="labelTempBody">
    <property name="geometry">
     <rect>
-     <x>790</x>
+     <x>800</x>
      <y>80</y>
      <width>51</width>
      <height>51</height>
@@ -145,7 +145,7 @@ border-style:solid;</string>
   <widget class="QLabel" name="labelTempC">
    <property name="geometry">
     <rect>
-     <x>840</x>
+     <x>850</x>
      <y>80</y>
      <width>51</width>
      <height>51</height>
@@ -170,7 +170,7 @@ border-style:solid;</string>
    <property name="geometry">
     <rect>
      <x>70</x>
-     <y>160</y>
+     <y>170</y>
      <width>670</width>
      <height>520</height>
     </rect>
@@ -186,7 +186,7 @@ border-style:solid;</string>
    <property name="geometry">
     <rect>
      <x>970</x>
-     <y>400</y>
+     <y>390</y>
      <width>81</width>
      <height>81</height>
     </rect>
@@ -212,7 +212,7 @@ background-color:#FF0000;</string>
   <widget class="QPushButton" name="btnUp">
    <property name="geometry">
     <rect>
-     <x>890</x>
+     <x>880</x>
      <y>320</y>
      <width>81</width>
      <height>81</height>
@@ -239,8 +239,8 @@ background-color:#6495ED;</string>
   <widget class="QPushButton" name="btnDown">
    <property name="geometry">
     <rect>
-     <x>890</x>
-     <y>480</y>
+     <x>880</x>
+     <y>470</y>
      <width>81</width>
      <height>81</height>
     </rect>
@@ -266,8 +266,8 @@ background-color:	#FFA500;</string>
   <widget class="QPushButton" name="btnLeft">
    <property name="geometry">
     <rect>
-     <x>810</x>
-     <y>400</y>
+     <x>790</x>
+     <y>390</y>
      <width>81</width>
      <height>81</height>
     </rect>
@@ -297,7 +297,7 @@ background-color:#66CDAA;</string>
    <property name="geometry">
     <rect>
      <x>980</x>
-     <y>610</y>
+     <y>620</y>
      <width>61</width>
      <height>61</height>
     </rect>
@@ -322,8 +322,8 @@ background-color:#66CDAA;</string>
   <widget class="QPushButton" name="btnPlay">
    <property name="geometry">
     <rect>
-     <x>820</x>
-     <y>610</y>
+     <x>780</x>
+     <y>620</y>
      <width>61</width>
      <height>61</height>
     </rect>
@@ -345,95 +345,20 @@ background-color:#66CDAA;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnComeOn">
-   <property name="geometry">
-    <rect>
-     <x>787</x>
-     <y>200</y>
-     <width>71</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>이리와</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnGood">
-   <property name="geometry">
-    <rect>
-     <x>787</x>
-     <y>230</y>
-     <width>71</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>잘했어</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnEat">
-   <property name="geometry">
-    <rect>
-     <x>877</x>
-     <y>200</y>
-     <width>71</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>밥먹자</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnNo">
-   <property name="geometry">
-    <rect>
-     <x>877</x>
-     <y>230</y>
-     <width>71</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>안돼</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnUsr1">
-   <property name="geometry">
-    <rect>
-     <x>960</x>
-     <y>200</y>
-     <width>91</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>사용자 설정</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnUsr2">
-   <property name="geometry">
-    <rect>
-     <x>960</x>
-     <y>230</y>
-     <width>91</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>사용자 설정</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>340</y>
-     <width>71</width>
-     <height>71</height>
+     <x>200</x>
+     <y>240</y>
+     <width>251</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
     <string>사생활보호</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPlace1">
@@ -446,8 +371,11 @@ background-color:#66CDAA;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius:40px;
-background-color:yellow;</string>
+    <string notr="true">background-color:white;
+border-radius:40px;
+border-color:#d4d4d4;
+border-width:7px;
+border-style:solid;</string>
    </property>
    <property name="text">
     <string/>
@@ -463,8 +391,11 @@ background-color:yellow;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius:40px;
-background-color:yellow;</string>
+    <string notr="true">background-color:white;
+border-radius:40px;
+border-color:#d4d4d4;
+border-width:7px;
+border-style:solid;</string>
    </property>
    <property name="text">
     <string/>
@@ -474,17 +405,17 @@ background-color:yellow;</string>
    <property name="geometry">
     <rect>
      <x>620</x>
-     <y>60</y>
-     <width>91</width>
-     <height>31</height>
+     <y>80</y>
+     <width>41</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-style:outset;
-</string>
+    <string notr="true">background-color:#F5C26B;
+border-radius:10px;</string>
    </property>
    <property name="text">
-    <string>장소 저장</string>
+    <string>저장</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPlace3">
@@ -497,28 +428,99 @@ background-color:yellow;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius:40px;
-background-color:yellow;</string>
+    <string notr="true">background-color:white;
+border-radius:40px;
+border-color:#d4d4d4;
+border-width:7px;
+border-style:solid;</string>
    </property>
    <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushSaveSound">
+  <widget class="QPushButton" name="btnDeletePlace">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>110</y>
-     <width>91</width>
-     <height>31</height>
+     <x>680</x>
+     <y>80</y>
+     <width>41</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-style:outset;</string>
+    <string notr="true">background-color:#F5C26B;
+border-radius:10px;</string>
    </property>
    <property name="text">
-    <string>사운드 저장</string>
+    <string>삭제</string>
    </property>
+  </widget>
+  <widget class="QPushButton" name="btnCapture">
+   <property name="geometry">
+    <rect>
+     <x>900</x>
+     <y>420</y>
+     <width>41</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>찰칵</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>170</y>
+     <width>261</width>
+     <height>92</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="btnSound4">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="btnComeOn">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="btnSound3">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="btnSound6">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="btnGood">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="btnSound5">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <zorder>labelFrame</zorder>
   <zorder>labelPulseIcon</zorder>
@@ -533,18 +535,14 @@ background-color:yellow;</string>
   <zorder>btnLeft</zorder>
   <zorder>btnFeed</zorder>
   <zorder>btnPlay</zorder>
-  <zorder>btnComeOn</zorder>
-  <zorder>btnGood</zorder>
-  <zorder>btnEat</zorder>
-  <zorder>btnNo</zorder>
-  <zorder>btnUsr1</zorder>
-  <zorder>btnUsr2</zorder>
   <zorder>label</zorder>
   <zorder>btnPlace1</zorder>
   <zorder>btnPlace2</zorder>
   <zorder>btnSavePlace</zorder>
   <zorder>btnPlace3</zorder>
-  <zorder>pushSaveSound</zorder>
+  <zorder>btnDeletePlace</zorder>
+  <zorder>btnCapture</zorder>
+  <zorder>gridLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections/>

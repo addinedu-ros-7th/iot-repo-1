@@ -572,26 +572,6 @@ background-color:transparent;
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnGpsPage">
-   <property name="geometry">
-    <rect>
-     <x>680</x>
-     <y>400</y>
-     <width>101</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color:white;
-border-radius:50px;
-border-color:#4169E1;
-border-width:10px;
-border-style:solid;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QPushButton" name="btnPlayPage">
    <property name="geometry">
     <rect>
@@ -830,7 +810,6 @@ border-radius:20px;}</string>
   <zorder>labelWater</zorder>
   <zorder>labelFood</zorder>
   <zorder>btnSetting</zorder>
-  <zorder>btnGpsPage</zorder>
   <zorder>btnPlayPage</zorder>
   <zorder>labelDateTime</zorder>
   <zorder>labelTemp</zorder>

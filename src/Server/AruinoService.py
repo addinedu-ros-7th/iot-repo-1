@@ -43,6 +43,21 @@ class WindowClass(QMainWindow, from_class):
         super().__init__()
         self.setupUi(self)
 
+        self.le_feedTimes = [
+            self.le_feedTime1,
+            self.le_feedTime2,
+            self.le_feedTime3,
+            self.le_feedTime4,
+            self.le_feedTime5
+        ]
+
+        for obj in self.le_feedTimes: obj.hide()
+            
+        self.Client_flag = False
+        self.Controller_flag = False
+        self.ledClient.setStyleSheet(f"background-color: {"yellow" if self.Client_flag else "gray"};border: 1px solid black;") 
+        self.ledController.setStyleSheet(f"background-color: {"yellow" if self.Client_flag else "gray"};border: 1px solid black;") 
+
         self.isCameraOn = False
         self.camera = Camera(self)
         self.camera.daemon = True
@@ -73,6 +88,9 @@ class WindowClass(QMainWindow, from_class):
         self.feeder_water_level = 0
         self.feeder_food_level = 0
 
+        self.feed_time = 0
+        self.feed_index = 1
+
         # Pet Checker
         self.pet_temperature = 0
         self.pet_heart_rate = 0
@@ -81,7 +99,7 @@ class WindowClass(QMainWindow, from_class):
             host = "database-1.c3micoc2s6p8.ap-northeast-2.rds.amazonaws.com",
             user = "aru",
             password = "1234",
-            database = "aruino"
+            database = "aruino_test"
         )
         self.cur = self.remote.cursor(buffered=True)
 
@@ -89,29 +107,21 @@ class WindowClass(QMainWindow, from_class):
         self.isCameraOn = True
         self.camera.running = True
         self.camera.start()
-        self.video = cv2.VideoCapture("/dev/video2")
+        # self.video = cv2.VideoCapture("/dev/video2")
+        self.video = cv2.VideoCapture(0)
 
     def updateCamera(self):
-        # self.label.setText("Camera Running : " + str(self.count))
-        # self.count += 1
-        self.labelDateTime.setText(str(datetime.now())[:-7])
+        now_time = str(datetime.now())[:-7]
+        self.labelDateTime.setText(now_time)
         retval, img = self.video.read()
 
         if retval:
             self.img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
             h,w,c = img.shape
             self.qimg = QImage(self.img.data, w,h,w*c, QImage.Format_RGB888)
-
             self.pixmap = self.pixmap.fromImage(self.qimg)
             self.pixmap = self.pixmap.scaled(self.labelCam.width(), self.labelCam.height())
-
             self.labelCam.setPixmap(self.pixmap)
-            # print(self.qimg)
-            # print(img)
-        # self.count += 1
-
-        # send(qimg)
 
     def initUI(self):
         self.labelID.setText(str(self.petID))
@@ -120,6 +130,13 @@ class WindowClass(QMainWindow, from_class):
         self.labelWeight.setText(str(self.petWeight))
         self.labelSpecies.setText(str(self.petSpecies))
         self.labelContactNumber.setText(str(self.contactNumber))
+
+    def initUI_feedTime(self):
+        for obj in self.le_feedTimes: obj.hide()
+        for i, val in enumerate(self.feeding_schedule):
+            self.le_feedTimes[i].show()
+            self.le_feedTimes[i].setText(str(val))
+
 
     def closeEvent(self, event):
         global tcp_controller_read_flag, tcp_client_read_flag, sefial_read_flag0
@@ -134,9 +151,7 @@ class WindowClass(QMainWindow, from_class):
         print("소켓 해제 완료")
 
     def fetchClientFirstInit(self, id):
-        print("hello fetch")
-        self.cur.execute(f"SELECT * FROM pet where id = {id}")
-        print(self.cur)
+        self.cur.execute(f"SELECT * FROM pet where pet_id = {int(id)}")
         petInfo = self.cur.fetchall()
         self.petID = petInfo[0][0]
         self.petName = petInfo[0][1]
@@ -144,17 +159,73 @@ class WindowClass(QMainWindow, from_class):
         self.petWeight = petInfo[0][3]
         self.petSpecies = petInfo[0][4]
         self.contactNumber = petInfo[0][5]
+
+        self.cur.execute(f"SELECT * FROM feeding_schedule where pet_id = {int(id)}")
+        self.feeding_schedule = [row[2] for row in self.cur.fetchall()]
+    
         self.initUI()
+        self.initUI_feedTime()
 
         response = []
         for val in petInfo[0]:
             response.append(str(val))
-        print(response)
+        for val in self.feeding_schedule:
+            response.append(str(val))
         return "&&".join(response)
+    
+    def requestFetchPlace(self, id):
+        self.cur.execute(f"SELECT webcam_position_ID, position_name FROM webcam_position WHERE pet_id = {int(id)};")
+        positions = [str(row[0]) + "&&" + str(row[1]) for row in self.cur.fetchall()]
+        response = []
+        for val in positions:
+            response.append(str(val))
+        return "&&".join(response)
+    
+    def savePlace(self, id, name):
+        self.cur.execute(f'''INSERT INTO webcam_position VALUES (NULL, {int(id)}, "{str(name)}", {self.up_down_angle}, {self.left_right_angle});''')
+        self.remote.commit()
+    
+    def deletePlace(self, pet_id, position_id):
+        self.cur.execute(f'''DELETE FROM webcam_position WHERE webcam_position_ID = {int(position_id)} AND pet_id = {int(pet_id)};''')
+        self.remote.commit()
 
-    def requstDB(self, feed_index, feeding_amount, feeding_time):
-        self.cur.execute("INSERT INTO feeding VALUES (%s, %s, %s)", (feed_index, feeding_amount, feeding_time))
-        pass
+    def getPosition(self, pet_id, position_id):
+        self.cur.execute(f"SELECT vertical_angle, horizen_angle FROM webcam_position WHERE webcam_position_ID = {int(position_id)} AND pet_id = {int(pet_id)};")
+        position = self.cur.fetchall()[0]
+        return f"{position[0]},{position[1]}"
+    
+    def updateFeedingSchedule(self, ft_list):
+        id = ft_list[0]
+
+        self.cur.execute(f'''DELETE FROM feeding_schedule WHERE pet_id = {int(id)};''')
+        self.remote.commit()
+
+        for t in ft_list[1:]:
+            self.cur.execute(f'''INSERT INTO feeding_schedule VALUES (NULL, {int(id)}, '{str(t)}', 50);''')
+            self.remote.commit()
+
+    def updatePET(self, info_list):
+        sql = f'''UPDATE pet 
+                SET 
+                    pet_name="{str(info_list[1])}", 
+                    pet_birthday="{str(info_list[2])}", 
+                    pet_weight={float(info_list[3])}, 
+                    pet_species="{str(info_list[4])}", 
+                    pet_contact_number="{str(info_list[5])}" 
+                WHERE pet_id={int(info_list[0])};'''
+        self.cur.execute(sql)
+        self.remote.commit()
+
+    def insertDB(self, table_name, values):
+        s = ",".join(["%s" for _ in range(len(values))])
+        self.cur.execute(f"INSERT INTO {table_name} VALUES (NULL, {s})", tuple(values))
+        self.remote.commit()
+    
+    def getRecentPetID(self):
+        self.cur.execute(f"SELECT pet_id FROM pet ORDER BY pet_id DESC LIMIT 1;")
+        id = self.cur.fetchall()[0][0]
+        print(id)
+        return str(id)
 
 def receiveTCPControllerEvent(server_socket0, myWindows):
     global tcp_controller_read_flag, client_first_init_flag
@@ -174,11 +245,14 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
             data = client_socket.recv(1024).decode("utf-8")
             if not data:
                 continue
-
+            
             # 요청 파싱
             parts = data.split("&&")
             print(parts)
             if len(parts) != 0:
+                myWindows.Controller_flag = not myWindows.Controller_flag
+                myWindows.ledController.setStyleSheet(f"background-color: {"yellow" if myWindows.Controller_flag else "gray"};border: 1px solid black;") 
+
                 # key = parts[0]
                 # message = parts[1]
                 response = "01" + "Idle"
@@ -227,7 +301,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
         # 클라이언트 연결 대기
         # print("클라이언트 연결 대기")
         client_socket, client_address = server_socket1.accept()
-        myWindows.labelClientAddr.setText(client_address)
+        myWindows.labelClientAddr.setText(client_address[0])
         # client_socket.settimeout(5.0)
         # print(f"클라이언트 {client_address}가 연결되었습니다.")
         if not tcp_client_read_flag:
@@ -238,23 +312,46 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
             if not data:
                 continue
 
+            
             # 요청 파싱
             parts = data.split("&&")
-            print(parts)
             if len(parts) != 0:
+
+                print(parts)
+                myWindows.Client_flag = not myWindows.Client_flag
+                myWindows.ledClient.setStyleSheet(f"background-color: {"yellow" if myWindows.Client_flag else "gray"};border: 1px solid black;") 
+
+                # if not parts[0] == "Sync Data" and not parts[0] == "Request WebCam Image":
+                #     print(parts)
+
                 if parts[0] == "Client First Init":
                     response = myWindows.fetchClientFirstInit(parts[1])
                     client_socket.send(response.encode("utf-8"))
                     client_first_init_flag = True
-                    
+                elif parts[0] == "Update Pet ":
+                    # TODO: UPDATE pet SET pet_name="Ham, Dong-Gyun" WHERE pet_id=1;
+                    f'''
+                    UPDATE pet 
+                    SET 
+                        pet_name={str(0)}, 
+                        pet_birthday={str(0)}, 
+                        pet_weight={float(0)}, 
+                        pet_species={str(0)}, 
+                        pet_contact_number={str(0)} 
+                    WHERE pet_id={0};
+                    '''
+                    pass
+                elif parts[0] == "insert Pet ":
+                    # TODO: UPDATE pet SET pet_name="Ham, Dong-Gyun" WHERE pet_id=1;
+                    pass
                 elif parts[0] == "Sync Data":
                     response = []
                     response.append("Sync Data")
-                    response.append(str(myWindows.h))
-                    response.append(str(myWindows.t))
-                    response.append(str(myWindows.hic))
-                    response.append(str(myWindows.x))
-                    response.append(str(myWindows.y))
+                    response.append(str(myWindows.feeder_humidity))
+                    response.append(str(myWindows.feeder_temperature))
+                    response.append(str(myWindows.feeder_hic))
+                    response.append(str(myWindows.feeder_water_level))
+                    response.append(str(myWindows.feeder_food_level))
                     response = "&&".join(response)
 
                     client_socket.send(response.encode("utf-8"))
@@ -270,7 +367,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     resize_frame = cv2.resize(myWindows.img, dsize=(670, 520), interpolation=cv2.INTER_AREA)
 
                     # now = time.localtime()
-                    stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
+                    # stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
                     encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
                     _, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
@@ -279,10 +376,44 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     length = str(len(stringData))
                     client_socket.sendall(length.encode('utf-8').ljust(64))
                     client_socket.send(stringData)
-                    client_socket.send(stime.encode('utf-8').ljust(64))
-                elif parts[0] == "Request DB":
+                    # client_socket.send(stime.encode('utf-8').ljust(64))
+                elif parts[0] == "WebCam Control Saved Place":
+                    # 1. DB에 저장되어 있는 x, y값 가져올 것
+                    # 2. 시리얼로 보낼 것
+
+                    key = "53"
+                    message = myWindows.getPosition(parts[1], parts[2])
+                    print(key, message)
+                    sendSerial(serial_socket, key, message)
                     pass
-                
+                elif parts[0] == "WebCam Fetch Place":
+                    response = myWindows.requestFetchPlace(parts[1])
+                    client_socket.send(response.encode("utf-8"))
+                elif parts[0] == "WebCam Save Place":
+                    myWindows.savePlace(parts[1], parts[2])
+
+                    response = myWindows.requestFetchPlace(parts[1])
+                    client_socket.send(response.encode("utf-8"))
+                elif parts[0] == "WebCam Delete Place":
+                    myWindows.deletePlace(parts[1], parts[2])
+
+                    response = myWindows.requestFetchPlace(parts[1])
+                    client_socket.send(response.encode("utf-8"))
+                elif parts[0] == "Feeding Schedule":
+                    myWindows.updateFeedingSchedule(parts[1:])
+                elif parts[0] == "User Modify":
+                    myWindows.updatePET(parts[1:])
+
+                    response = myWindows.fetchClientFirstInit(parts[1])
+                    client_socket.send(response.encode("utf-8"))
+                    client_first_init_flag = True
+                elif parts[0] == "User Register":
+                    myWindows.insertDB("pet", parts[1:])
+
+                    id = myWindows.getRecentPetID()
+                    response = myWindows.fetchClientFirstInit(id)
+                    client_socket.send(response.encode("utf-8"))
+                    client_first_init_flag = True
             else:
                 response = "유효하지 않은 요청"
                 print("Key Error")
@@ -358,8 +489,8 @@ if __name__=="__main__":
     app = QApplication(sys.argv)
 
     # 시리얼 포트, 버레이트 설정
-    py_serial0 = serial.Serial("/dev/ttyACM0", 9600)
-    py_serial1 = serial.Serial("/dev/ttyACM1", 9600)
+    py_serial0 = serial.Serial("/dev/ttyACM0", 9600)    # Feeder
+    py_serial1 = serial.Serial("/dev/ttyACM1", 9600)    # Comunicator
     # py_serial0 = 0
 
     # 서버 설정

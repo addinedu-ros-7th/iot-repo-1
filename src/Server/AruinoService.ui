@@ -570,7 +570,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>80080</string>
+     <string>8080</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelServerAddr">
@@ -676,6 +676,38 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="ledClient">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>210</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ledController">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="gbFeeder">
    <property name="geometry">
@@ -689,53 +721,6 @@
    <property name="title">
     <string>Feeder</string>
    </property>
-   <widget class="QLabel" name="labelLastFeedingInfo">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>210</y>
-      <width>111</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:transparent;</string>
-    </property>
-    <property name="text">
-     <string>마지막 배식시간 </string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelLastFeeding">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>210</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:transparent;</string>
-    </property>
-    <property name="text">
-     <string>12 : 00</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelFeedAmountInfo">
     <property name="geometry">
      <rect>
@@ -793,53 +778,11 @@
      <string>배식시간</string>
     </property>
    </widget>
-   <widget class="QTimeEdit" name="timeFeeding1">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>70</y>
-      <width>118</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="timeFeeding2">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>100</y>
-      <width>118</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="timeFeeding3">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>130</y>
-      <width>118</width>
-      <height>27</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelFoodLevelInfo">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
+      <y>250</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -861,7 +804,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>240</y>
+      <y>250</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -886,7 +829,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>270</y>
+      <y>280</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -908,7 +851,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>270</y>
+      <y>280</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -987,13 +930,53 @@
      <string>온도</string>
     </property>
    </widget>
-   <widget class="QTimeEdit" name="timeFeeding3_2">
+   <widget class="QLineEdit" name="le_feedTime1">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>70</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_feedTime2">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>100</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_feedTime3">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>130</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_feedTime4">
     <property name="geometry">
      <rect>
       <x>80</x>
       <y>160</y>
-      <width>118</width>
-      <height>27</height>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_feedTime5">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>190</y>
+      <width>113</width>
+      <height>25</height>
      </rect>
     </property>
    </widget>
@@ -1010,35 +993,6 @@
    <property name="title">
     <string>Communicator</string>
    </property>
-   <widget class="QLabel" name="labelSoundInfo">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>220</y>
-      <width>91</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>sound play</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelSoundTask">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>220</y>
-      <width>291</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>task</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelCamInfo">
     <property name="geometry">
      <rect>
@@ -1095,64 +1049,6 @@
     </property>
     <property name="text">
      <string>camera display</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelFileUser1">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>250</y>
-      <width>281</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>file_name</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelSoundUser1">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>250</y>
-      <width>91</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>user1</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelFileUser3">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>280</y>
-      <width>281</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>file_name</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelSoundUser2">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>280</y>
-      <width>91</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>user2</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="labelCamPlace1H">

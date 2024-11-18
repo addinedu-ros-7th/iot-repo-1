@@ -616,6 +616,9 @@ class CamWindowClass(QMainWindow, form_cam_Class):
 
         self.btnGood.show()
 
+        for btnPlace in self.btnPlaces:
+            btnPlace.setText("즐겨찾는 장소")
+            
         self.btnPlace1.clicked.connect(lambda : self.loadPlace(0))
         self.btnPlace2.clicked.connect(lambda : self.loadPlace(1))
         self.btnPlace3.clicked.connect(lambda : self.loadPlace(2))
@@ -635,7 +638,7 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         for i in range(len(self.btnSounds)):
             self.btnSounds[i].setText("-")
 
-        self.btnGood.setText("저장하기")
+        self.btnGood.setText("음성 저장")
                
         self.labelPulseIcon.setPixmap(QPixmap("../../data/icon/pulse.png"))
 

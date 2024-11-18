@@ -460,7 +460,7 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
         self.cbSpecies.addItem("고양이")
 
         if self.windowClass.id_flag == True:
-            self.labelID.setText(self.windowClass.petID)
+            # self.labelID.setText(self.windowClass.petID)
             self.editName.setText(self.windowClass.name)
             self.dateEditBirth.setDate(datetime.strptime(self.windowClass.birth, '%Y-%m-%d').date())
             self.labelAge.setText(self.windowClass.age)
@@ -468,7 +468,7 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
             self.cbSpecies.setCurrentIndex(0 if self.windowClass.species == "dog" else 1) #self.cbSpecies.setCurrentText(self.windowClass.species)
             self.editContactNumber.setText(self.windowClass.contact_number)
 
-        self.labelID.setText("1")
+        # self.labelID.setText("1")
         self.dateEditBirth.dateChanged.connect(self.getAge)
 
         self.editContactNumber.textChanged.connect(self.legExCheck)
@@ -611,8 +611,10 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.btnGood.clicked.connect(lambda : self.sendSound("good"))
         self.btnComeOn.clicked.connect(lambda : self.sendSound("comeon"))
 
-        # for soundbtn in self.btnSounds:
-        #     soundbtn.hide()
+        for soundbtn in self.btnSounds:
+            soundbtn.hide()
+
+        self.btnGood.show()
 
         self.btnPlace1.clicked.connect(lambda : self.loadPlace(0))
         self.btnPlace2.clicked.connect(lambda : self.loadPlace(1))
@@ -632,6 +634,8 @@ class CamWindowClass(QMainWindow, form_cam_Class):
 
         for i in range(len(self.btnSounds)):
             self.btnSounds[i].setText("-")
+
+        self.btnGood.setText("저장하기")
                
         self.labelPulseIcon.setPixmap(QPixmap("../../data/icon/pulse.png"))
 
@@ -691,8 +695,16 @@ class CamWindowClass(QMainWindow, form_cam_Class):
             messages.append(self.place_id_list[i])
             self.sendTCP(messages)
 
-            for i in range(3):
-                self.btnPlaces[i].hide()
+            # for i in range(3):
+            #     self.btnPlaces[i].hide()
+
+            for i in range(len(self.place_id_list)):
+                self.btnPlaces[i].setStyleSheet("background-color:white;\
+                                                border-radius:40px;\
+                                                border-color:#d4d4d4;\
+                                                border-width:7px;\
+                                                border-style:solid;")
+                self.btnPlaces[i].setText("")
 
             self.fetchPlaces()
     

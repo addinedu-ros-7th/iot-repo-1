@@ -39,7 +39,7 @@ class Camera(QThread):
         self.running = False
 
 class WindowClass(QMainWindow, from_class):
-    def __init__(self, py_serial, server_socket0, server_socket1):
+    def __init__(self, py_serial0, py_serial1, server_socket0, server_socket1):
         super().__init__()
         self.setupUi(self)
 
@@ -68,14 +68,15 @@ class WindowClass(QMainWindow, from_class):
 
         self.server_socket0 = server_socket0
         self.server_socket1 = server_socket1
-        self.py_serial = py_serial
+        self.py_serial = py_serial1
+        self.py_serial_feeder = py_serial0
 
-        self.petID = None
-        self.petName = None
-        self.petBirth = None
-        self.petWeight = None
-        self.petSpecies = None
-        self.contactNumber = None
+        self.petID = "1"
+        self.petName = ""
+        self.petBirth = ""
+        self.petWeight = ""
+        self.petSpecies = ""
+        self.contactNumber = ""
 
         # Comunicator
         self.up_down_angle = 90
@@ -88,12 +89,24 @@ class WindowClass(QMainWindow, from_class):
         self.feeder_water_level = 0
         self.feeder_food_level = 0
 
-        self.feed_time = 0
-        self.feed_index = 1
+        self.now_time = ""
+        self.recent_feed_time = "99:99"
+        self.only_now_time = "999:99"
+        self.feeding_schedule = []
 
         # Pet Checker
-        self.pet_temperature = 0
+        self.pet_calorie_sum = 0
+        self.status_log = [0,0,0]
+        self.pet_check_cnt = 0
+        self.pet_temperature = 0.
         self.pet_heart_rate = 0
+        self.pet_calorie = 0.
+        self.pet_status = ""
+        self.pet_lay = 0
+        self.pet_walk = 0
+        self.pet_run = 0
+
+
 
         self.remote = mysql.connector.connect(
             host = "database-1.c3micoc2s6p8.ap-northeast-2.rds.amazonaws.com",
@@ -107,12 +120,37 @@ class WindowClass(QMainWindow, from_class):
         self.isCameraOn = True
         self.camera.running = True
         self.camera.start()
-        # self.video = cv2.VideoCapture("/dev/video2")
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture("/dev/video2")
+        # self.video = cv2.VideoCapture(0)
+
+        self.test_btn.clicked.connect(self.test_fn)
+        self.btn_up.pressed.connect(lambda: self.test_cam_fn("up", "start"))
+        self.btn_down.pressed.connect(lambda: self.test_cam_fn("down", "start"))
+        self.btn_left.pressed.connect(lambda: self.test_cam_fn("left", "start"))
+        self.btn_right.pressed.connect(lambda: self.test_cam_fn("right", "start"))
+
+        self.btn_up.released.connect(lambda: self.test_cam_fn("up", "end"))
+        self.btn_down.released.connect(lambda: self.test_cam_fn("down", "end"))
+        self.btn_left.released.connect(lambda: self.test_cam_fn("left", "end"))
+        self.btn_right.released.connect(lambda: self.test_cam_fn("right", "end"))
+
+    def test_cam_fn(self, pos, se):
+        print( pos, se)
+        key10 = 1 if pos == "up" else 2 if pos == "down" else 3 if pos == "left" else 4
+        key01 = 1 if se == "start" else 0
+
+        key = key10 * 10 + key01
+        message = "WebCam Control"
+        print(key)
+        sendSerial(self.py_serial, key, message)
+    
+    def test_fn(self):
+        print("test btn pushed!!!")
+        sendSerial(self.py_serial, 53, "90,90")
 
     def updateCamera(self):
-        now_time = str(datetime.now())[:-7]
-        self.labelDateTime.setText(now_time)
+        self.now_time = str(datetime.now())[:-7]
+        self.labelDateTime.setText(self.now_time)
         retval, img = self.video.read()
 
         if retval:
@@ -122,6 +160,29 @@ class WindowClass(QMainWindow, from_class):
             self.pixmap = self.pixmap.fromImage(self.qimg)
             self.pixmap = self.pixmap.scaled(self.labelCam.width(), self.labelCam.height())
             self.labelCam.setPixmap(self.pixmap)
+
+        self.only_now_time = self.now_time.split(" ")[1][:5] # 09:51 -> 9시 51분
+
+        # print("only_now_time", self.only_now_time)
+        # print("recent_feed_time", self.recent_feed_time)
+
+        if self.recent_feed_time <= self.only_now_time:
+            sendSerial(self.py_serial_feeder, 53, "u,400,10") # 53u,400,10
+
+            if len(self.feeding_schedule) >= 1:
+                self.recent_feed_time = "99:99"
+                for time in reversed(self.feeding_schedule):
+                    # print(only_now_time, time[:5], only_now_time < time[:5])
+                    if self.only_now_time < time[:5]:
+                        self.recent_feed_time = time[:5]
+                if self.recent_feed_time == "99:99":
+                    self.recent_feed_time = time[:5]
+                elif self.recent_feed_time <= self.only_now_time:
+                    self.recent_feed_time = "99:99"
+            else:
+                self.recent_feed_time = "99:99"
+            #  print("recent_feed_time:", self.recent_feed_time)
+
 
     def initUI(self):
         self.labelID.setText(str(self.petID))
@@ -162,6 +223,17 @@ class WindowClass(QMainWindow, from_class):
 
         self.cur.execute(f"SELECT * FROM feeding_schedule where pet_id = {int(id)}")
         self.feeding_schedule = [row[2] for row in self.cur.fetchall()]
+
+        if len(self.feeding_schedule) > 0:
+            self.recent_feed_time = "99:99"
+            for time in reversed(self.feeding_schedule):
+                # print(only_now_time, time[:5], only_now_time < time[:5])
+                if self.only_now_time < time[:5]:
+                    self.recent_feed_time = time[:5]
+            if self.recent_feed_time == "99:99":
+                self.recent_feed_time = time[:5]
+        else:
+            self.recent_feed_time = "99:99"
     
         self.initUI()
         self.initUI_feedTime()
@@ -224,8 +296,17 @@ class WindowClass(QMainWindow, from_class):
     def getRecentPetID(self):
         self.cur.execute(f"SELECT pet_id FROM pet ORDER BY pet_id DESC LIMIT 1;")
         id = self.cur.fetchall()[0][0]
-        print(id)
+        # print(id)
         return str(id)
+
+    def getLog(self, key, pet_id):
+        self.cur.execute(f"SELECT * FROM petchecker WHERE pet_id = {int(pet_id)} ORDER BY petchecker_id DESC LIMIT 7;")
+        temp_li = [key]
+        for row in reversed(self.cur.fetchall()):
+            # print(row)
+            temp_li.append(",".join([str(row[i]) for i in range(2,7)]))
+
+        return "&&".join(temp_li)
 
 def receiveTCPControllerEvent(server_socket0, myWindows):
     global tcp_controller_read_flag, client_first_init_flag
@@ -248,7 +329,7 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
             
             # 요청 파싱
             parts = data.split("&&")
-            print(parts)
+            # print(parts)
             if len(parts) != 0:
                 myWindows.Controller_flag = not myWindows.Controller_flag
                 myWindows.ledController.setStyleSheet(f"background-color: {"yellow" if myWindows.Controller_flag else "gray"};border: 1px solid black;") 
@@ -256,23 +337,50 @@ def receiveTCPControllerEvent(server_socket0, myWindows):
                 # key = parts[0]
                 # message = parts[1]
                 response = "01" + "Idle"
+                # every 1sec
                 if parts[0] == "PetChecker Sync Data":
-                    '''
-                    TODO:
-                    목걸이에서 위치, 심장박동, 체온, 가속도 등의 정보를 보냄
-                    이를 받아 DB에 insert해야함
+                    myWindows.pet_temperature = float(parts[1])
+                    myWindows.pet_heart_rate = int(parts[2])
+                    myWindows.pet_calorie = float(parts[3])
+                    myWindows.pet_status = parts[4]
+                    myWindows.pet_lay = int(parts[5])
+                    myWindows.pet_walk = int(parts[6])
+                    myWindows.pet_run = int(parts[7])
 
-                    심장박동, 체온 등 건강 이상 증세가 보이면, 반복되면, 대응해야함
-                    '''
-                    # myWindows.x = parts[1]
-                    # myWindows.y = parts[2]
-                    # print("x:", myWindows.x)
-                    # print("y:", myWindows.y)
-                    print(parts[1:])
+
+                    myWindows.labelTempBody.setText(parts[1])
+                    myWindows.labelPulse.setText(parts[2])
+
+                    myWindows.labelActivity.setText(parts[4])
+
+                    myWindows.pet_calorie_sum += myWindows.pet_calorie
+                    if myWindows.pet_status == "쉬는 중":
+                        myWindows.status_log[0] += 1
+                    elif myWindows.pet_status == "걷는 중":
+                        myWindows.status_log[1] += 1
+                    elif myWindows.pet_status == "달리는 중":
+                        myWindows.status_log[2] += 1
+
+
+                    myWindows.pet_check_cnt += 1
+                    # print(myWindows.pet_check_cnt)
+                    if myWindows.pet_check_cnt >= 60:
+                        values = [myWindows.petID, 
+                                  myWindows.now_time, 
+                                  myWindows.pet_calorie_sum, 
+                                  myWindows.status_log[0],
+                                  myWindows.status_log[1],
+                                  myWindows.status_log[2]]
+                        myWindows.insertDB("petchecker", values)
+
+                        myWindows.pet_check_cnt =0
+                        myWindows.status_log = [0,0,0]
+                        myWindows.pet_calorie_sum = 0
 
                     if client_first_init_flag:
                         client_first_init_flag = False
                         response = "02" + str(myWindows.petName) + "&" + str(myWindows.contactNumber)
+                    
  
             else:
                 response = "00" + "MessageError"
@@ -297,13 +405,18 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
     global tcp_client_read_flag, client_first_init_flag
     print("tcp 8081 대기 중")
     
+
     while tcp_client_read_flag is True:
         # 클라이언트 연결 대기
         # print("클라이언트 연결 대기")
         client_socket, client_address = server_socket1.accept()
+        # client_socket.settimeout(0.01)
+        # time.sleep(0.1) 
+
         myWindows.labelClientAddr.setText(client_address[0])
-        # client_socket.settimeout(5.0)
         # print(f"클라이언트 {client_address}가 연결되었습니다.")
+        # client_socket.settimeout(5.0)
+
         if not tcp_client_read_flag:
             break
         try:
@@ -317,7 +430,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
             parts = data.split("&&")
             if len(parts) != 0:
 
-                print(parts)
+                # print(parts)
                 myWindows.Client_flag = not myWindows.Client_flag
                 myWindows.ledClient.setStyleSheet(f"background-color: {"yellow" if myWindows.Client_flag else "gray"};border: 1px solid black;") 
 
@@ -352,6 +465,12 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     response.append(str(myWindows.feeder_hic))
                     response.append(str(myWindows.feeder_water_level))
                     response.append(str(myWindows.feeder_food_level))
+
+                    response.append(str(myWindows.pet_temperature))
+                    response.append(str(myWindows.pet_heart_rate))
+                    response.append(str(myWindows.pet_calorie))
+                    response.append(str(myWindows.pet_status))
+
                     response = "&&".join(response)
 
                     client_socket.send(response.encode("utf-8"))
@@ -364,7 +483,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     sendSerial(serial_socket, key, message)
                 elif parts[0] == "Request WebCam Image":
 
-                    resize_frame = cv2.resize(myWindows.img, dsize=(670, 520), interpolation=cv2.INTER_AREA)
+                    resize_frame = cv2.resize(myWindows.img, dsize=(320, 250), interpolation=cv2.INTER_AREA)
 
                     # now = time.localtime()
                     # stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
@@ -383,7 +502,7 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
 
                     key = "53"
                     message = myWindows.getPosition(parts[1], parts[2])
-                    print(key, message)
+                    # print(key, message)
                     sendSerial(serial_socket, key, message)
                     pass
                 elif parts[0] == "WebCam Fetch Place":
@@ -414,6 +533,11 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     response = myWindows.fetchClientFirstInit(id)
                     client_socket.send(response.encode("utf-8"))
                     client_first_init_flag = True
+                elif parts[0] == "Activity Log":
+                    # print("Activity Log!!!!")
+                    response = myWindows.getLog(parts[0], parts[1])
+                    # print(response)
+                    client_socket.send(response.encode("utf-8"))
             else:
                 response = "유효하지 않은 요청"
                 print("Key Error")
@@ -512,7 +636,7 @@ if __name__=="__main__":
     # server_socket1.settimeout(5.0)
 
     # 쓰레드 생성 및 시작
-    myWindows = WindowClass(py_serial0, server_socket0, server_socket1)
+    myWindows = WindowClass(py_serial0, py_serial1, server_socket0, server_socket1)
     serial0_thread = threading.Thread(target=receiveSerialEvent,
                                      args=(py_serial0, myWindows))
     serial1_thread = threading.Thread(target=receiveSerialEvent,

@@ -939,6 +939,9 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QLineEdit" name="le_feedTime2">
     <property name="geometry">
@@ -948,6 +951,9 @@
       <width>113</width>
       <height>25</height>
      </rect>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLineEdit" name="le_feedTime3">
@@ -959,6 +965,9 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QLineEdit" name="le_feedTime4">
     <property name="geometry">
@@ -969,6 +978,9 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QLineEdit" name="le_feedTime5">
     <property name="geometry">
@@ -978,6 +990,9 @@
       <width>113</width>
       <height>25</height>
      </rect>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>
@@ -1203,7 +1218,7 @@
      <string>test_btn</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btn_up">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -1213,10 +1228,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>up</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="btn_down">
     <property name="geometry">
      <rect>
       <x>240</x>
@@ -1226,10 +1241,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>down</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="btn_left">
     <property name="geometry">
      <rect>
       <x>350</x>
@@ -1239,10 +1254,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>left</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="btn_right">
     <property name="geometry">
      <rect>
       <x>460</x>
@@ -1252,7 +1267,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>right</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_6">

@@ -20,6 +20,7 @@ form_register_Class = uic.loadUiType("Register.ui")[0]
 form_log_Class = uic.loadUiType("Log.ui")[0]
 
 server_address = "192.168.2.29"
+#"192.168.0.156"
 server_port = 8081
 
 def getAge(dateBirth):
@@ -144,20 +145,36 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.btnUser2.hide()
         self.btnUser3.hide()
         self.btnUser4.hide()
+    
+        self.feeding_times = []
 
         self.editInit.setValidator(QIntValidator(1,20))
         self.btnInit.setText("입력")
         self.btnInit.clicked.connect(self.userInit)
         self.editInit.returnPressed.connect(self.userInit)
 
+        self.active = [0] * 20
+
+        self.count = 0
+
     def userInit(self):
         self.petID = self.editInit.text()
-        self.id_flag = True
 
-        self.editInit.hide()
-        self.btnInit.hide()
-        self.labelInit_2.hide()
-        self.firstInit()
+        try:
+            self.editInit.hide()
+            self.btnInit.hide()
+            self.labelInit_2.hide()
+            self.firstInit()
+            self.id_flag = True
+        except(ConnectionRefusedError):
+            self.editInit.show()
+            self.btnInit.show()
+            self.labelInit_2.show()
+            QMessageBox.warning(self, "Server closed", "서버가 닫혀있습니다.")
+            return
+        
+        print(self.id_flag)
+        print("done")
 
     def userSelect(self, key):
         match(key):
@@ -189,13 +206,15 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.species = self.petInfo[4]
         self.contact_number = self.petInfo[5]
         self.age = getAge(self.birth)
-        print("request :", self.petInfo)
+        print("first init response :", self.petInfo)
 
-        self.feeding_times = []
+        # self.feeding_times = []
         for i in range(len(self.petInfo) - 6):
             self.feeding_times.append(self.petInfo[i+6])
 
+        print("done first init")
         self.initUI()
+        print("done init ui")
         
     def initUI(self):
         self.labelDateTime.show()
@@ -222,9 +241,10 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
             self.btnHeart.move(420,240)
             self.btnHeart.setIcon(QIcon("../../data/icon/heart.png"))
 
-        self.setGraph()
-
         self.timer.start(1000)
+        print("timer start")
+
+        self.setGraph()
 
     def sendTCP(self, messages):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -242,42 +262,61 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         return response
     
     def fetchSyncData(self):
+        # print("request sync data")
         response = self.requestTCP(["Sync Data"])
-        # print("request :", self.response)
-        self.response = response.split("&&")
-        sync_data = self.response
+        # print("request :", response)
+        self.sync_data = response.split("&&")
+        sync_data = self.sync_data
+        
+        if self.count == 1:
+            print(self.sync_data)
+            print(self.feeder_water_level)
 
         if sync_data[0] == "Sync Data":
             humidity = sync_data[1]
             temp = sync_data[2]
-            self.activity = sync_data[3]
+            self.hic = sync_data[3]
             self.feeder_water_level = sync_data[4]
-            self.feeder_food_leovel = sync_data[5]
+            self.feeder_food_level = sync_data[5]
             self.temp_body = sync_data[6]
             self.pulse = sync_data[7]
+            self.activity = sync_data[8]
+            self.activity_label = sync_data[9]
             
             # print("Sync Data", sync_data)
 
-            self.labelTemp.setText(f"현재 온도 : {temp}")
-            self.labelHumid.setText(f"현재 습도 : {humidity}")
-            self.labelActivity.setText(self.activity)
+            if len(self.temp_body) >= 4:
+                self.temp_body = self.temp_body[:4]
+
+            self.labelTemp.setText(f"현재 온도 : {temp}°C")
+            self.labelHumid.setText(f"현재 습도 : {humidity}%")
+            self.labelActivity.setText(self.activity_label)
             self.labelTempBody.setText(self.temp_body)
             self.labelPulse.setText(self.pulse)
+            self.labelCalories.setText(self.activity)
 
-            if self.activity == "쉬는 중":
-                active = 1
-            elif self.activity == "걷는 중":
-                active = 2
-            elif self.activity == "뛰는 중":
-                active = 3
-            else:
-                return
+            # if self.activity == "쉬는 중":
+            #     active = 1
+            # elif self.activity == "걷는 중":
+            #     active = 2
+            # elif self.activity == "뛰는 중":
+            #     active = 3
+            # else:
+            #     return
 
-            self.y = self.y[1:] + active
-            self.widget.plot(self.y)
-            self.data_line.setData(self.y)
+            self.active = self.active[1:]
+            self.active.append(float(self.activity))
+            self.data_line.setData(self.active)
+            # self.widgetActivity.plot(self.active, background=None)
 
-            print("getting sync data")
+            # print("getting sync data")
+            
+            # self.updateGraph()
+            self.count += 1
+            self.updateGraph()
+
+        if self.count % 5 == 0:
+            print(self.count, self.sync_data)
 
     def updateTime(self):
         self.now = datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')
@@ -310,9 +349,15 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
     def setGraph(self):
         self.plotFood = self.findChild(pg.PlotWidget, "widgetFoodLevel")
         self.plotWater = self.findChild(pg.PlotWidget, "widgetWaterLevel")
+        self.plotActivity = self.findChild(pg.PlotWidget, "widgetActivity")
 
         self.plotFood.setBackground('w')
         self.plotWater.setBackground('w')
+        self.plotActivity.setBackground(background=None)
+        self.plotActivity.setYRange(5,30)
+        self.plotActivity.getPlotItem().hideAxis('bottom')
+        self.plotActivity.getPlotItem().hideAxis('left')
+        self.data_line = self.plotActivity.plot(self.active, background=None, pen= 'k', width=2)
 
         self.plotFood.getPlotItem().hideAxis('left')
         # self.plotFood.getPlotItem().invertX(True)
@@ -323,21 +368,29 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         # self.plotWater.getPlotItem().invertY(True)
 
         self.plotFood.setXRange(0, 100)
-        self.plotWater.setXRange(0, 100)
+        self.plotWater.setXRange(0, 800)
         self.plotFood.setYRange(0, 1)
         self.plotWater.setYRange(0, 1)
 
+        # if not self.sync_data:
+        #     self.feeder_food_level = 50
+        #     self.feeder_water_level = 20
+        # print(self.feeder_water_level)
+
+    def updateGraph(self):
         x = np.linspace(0, 1, 2)
-        water_level = [50] * 2 #self.water_level
-        food_level = [30] * 2 # self.food_level
-        curve_w1 = self.plotWater.plot(water_level, x, pen=(65, 105, 225))
-        curve_w2 = self.plotWater.plot([0,0], [0, 50], pen=(65, 105, 225))
+        water_level = int(self.feeder_water_level)
+        water_level_li = [water_level] * 2 #self.water_level
+        # food_level = [self.feeder_food_level] * 2 # self.food_level
+        curve_w1 = self.plotWater.plot(water_level_li, x, pen=(65, 105, 225))
+        curve_w2 = self.plotWater.plot([0,0], [0, water_level], pen=(65, 105, 225))
 
-        curve_f1 = self.plotFood.plot(food_level, x, pen=(245, 194, 107))
-        curve_f2 = self.plotFood.plot([0,0], [0, 30], pen=(245, 194, 107))
+        # curve_f1 = self.plotFood.plot(food_level, x, pen=(245, 194, 107))
+        # curve_f2 = self.plotFood.plot([0,0], [0, self.feeder_food_level], pen=(245, 194, 107))
 
-        self.plotFood.addItem(pg.FillBetweenItem(curve_f1, curve_f2, brush=(245, 194, 107)))
+        # self.plotFood.addItem(pg.FillBetweenItem(curve_f1, curve_f2, brush=(245, 194, 107)))
         self.plotWater.addItem(pg.FillBetweenItem(curve_w1, curve_w2, brush=(65, 105, 225)))
+        # print("good")
 
     def cameraPage(self):
         self.cam = CamWindowClass(self)
@@ -405,16 +458,19 @@ class LogWindowClass(QMainWindow, form_log_Class):
         self.run = []
 
         response = self.windowClass.requestTCP(["Activity Log", str(self.windowClass.petID)])
-        self.response = response.split("&&")
+        self.log_data = response.split("&&")
+        print(self.log_data)
         # print("request activity log")
-        if self.response[0] == "Activity Log":
-            for each in self.response[1:]:
+        if self.log_data[0] == "Activity Log":
+            for each in self.log_data[1:]:
                 tmp_list = each.split(",")
+                print(tmp_list)
                 self.day.append(tmp_list[0].split(" ")[0])
                 self.calories.append(float(tmp_list[1]))
                 self.lay.append(int(tmp_list[2]))
                 self.walk.append(int(tmp_list[3]))
                 self.run.append(int(tmp_list[4]))
+                
 
             yesterday = int(self.day[0][-2:])
             weekago = int(self.day[6][-2:])
@@ -481,6 +537,7 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
         self.windowClass = windowClass
 
         print("Setting Page - id_flag :", self.windowClass.id_flag)
+        # print("Setting Page - feeding_times :", self.windowClass.feeding_times)
         
         self.initUI()
 
@@ -488,17 +545,20 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
         for i in range(5):
             self.btnAdds[i].hide()
             self.timeFeedings[i].hide()
-            self.timeFeedings[i].timeChanged.connect(self.setTimeFeeding)
          
         if self.windowClass.feeding_times:
+            # print("1. setting init", self.windowClass.feeding_times)    
             for i, val in enumerate(self.windowClass.feeding_times):
+                # print(val)
                 self.timeFeedings[i].show()
                 tmp_li = val.split(":")
                 self.timeFeedings[i].setTime(QTime(int(tmp_li[0]), int(tmp_li[1]), int(tmp_li[2])))
+                self.timeFeedings[i].timeChanged.connect(self.setTimeFeeding)
                 self.btnAdds[i].show()
                 self.btnAdds[i].setText("-")
                 self.btnAdds[i].disconnect()
                 self.btnAdds[i].clicked.connect(self.Delete)
+            # print("2. setting init", self.windowClass.feeding_times)
             self.btnAdds[i+1].show()
             self.btnAdds[i+1].setText("+")
             self.btnAdds[i+1].disconnect()
@@ -532,7 +592,12 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
 
     def setTimeFeeding(self):
         for i in range(len(self.windowClass.feeding_times)):
+            # print("setTimeFeeding", self.windowClass.feeding_times[i])
             self.windowClass.feeding_times[i] = self.timeFeedings[i].time().toString("hh:mm:ss")
+        #     print("after setTimeFeeding", self.windowClass.feeding_times[i])
+        #     print("timeFeedings", self.timeFeedings[i].time().toString("hh:mm:ss"))
+            
+        # print("settime",self.windowClass.feeding_times)
 
     def Delete(self):
         btn_names = [val.objectName() for val in self.btnAdds]
@@ -582,6 +647,7 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
             self.btnAdds[len_times + 1].clicked.connect(self.Add)
 
     def feedSetting(self):
+        self.setTimeFeeding()
         retval = QMessageBox.question(self, 'Feed Setting', '배식 시간 설정을 설정하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if retval == QMessageBox.Yes:
             feeding_schedule = ["Feeding Schedule", self.windowClass.petID]
@@ -590,6 +656,7 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
                 feeding_schedule.append(self.windowClass.feeding_times[i])
 
             message = feeding_schedule
+            print("feeding setting", message)
             self.windowClass.sendTCP(message)
         else:
             pass
@@ -723,6 +790,8 @@ class CamWindowClass(QMainWindow, form_cam_Class):
     def __init__(self, windowClass, ):
         super().__init__()
         self.setupUi(self)
+
+        self.setWindowTitle("Web Cam Monitoring")
         self.windowClass = windowClass
 
         self.isCameraOn = False
@@ -795,10 +864,10 @@ class CamWindowClass(QMainWindow, form_cam_Class):
 
     def setIcon(self):
         self.btnMainPage.setIcon(QIcon("../../data/icon/home.png"))
-        self.btnRight.setIcon(QIcon("../../data/icon/arrow-right.png"))
-        self.btnDown.setIcon(QIcon("../../data/icon/arrow-down.png"))
-        self.btnUp.setIcon(QIcon("../../data/icon/right-arrow.png"))
-        self.btnLeft.setIcon(QIcon("../../data/icon/play.png"))
+        self.btnRight.setIcon(QIcon("../../data/icon/arrowRight.png"))
+        self.btnDown.setIcon(QIcon("../../data/icon/arrowDown.png"))
+        self.btnUp.setIcon(QIcon("../../data/icon/arrowUp.png"))
+        self.btnLeft.setIcon(QIcon("../../data/icon/arrowLeft.png"))
         self.btnFeed.setIcon(QIcon("../../data/icon/pet-food.png"))
         self.btnPlay.setIcon(QIcon("../../data/icon/ball.png"))
 
@@ -808,6 +877,9 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.btnGood.setText("음성 저장")
                
         self.labelPulseIcon.setPixmap(QPixmap("../../data/icon/pulse.png"))
+
+        # self.labelTempBody.setText(self.windowClass.temp_body)
+        # self.labelPulse.setText(self.windowClass.pulse)
 
     def fetchPlaces(self):
         messages = ["WebCam Fetch Place"]

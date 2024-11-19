@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1111</width>
-    <height>740</height>
+    <height>755</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@ background-color:transparent;
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../../../../Downloads/free-icon-love-14415504.png</pixmap>
+    <pixmap>../../../../../../../Downloads/free-icon-love-14415504.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -79,7 +79,7 @@ border-style:solid;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/home.png</normaloff>../../../../Downloads/home.png</iconset>
+     <normaloff>../../../../../../../Downloads/home.png</normaloff>../../../../../../../Downloads/home.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -200,7 +200,7 @@ background-color:#FF0000;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/right-arrow.png</normaloff>../../../../Downloads/right-arrow.png</iconset>
+     <normaloff>../../../../../../../Downloads/right-arrow.png</normaloff>../../../../../../../Downloads/right-arrow.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -227,7 +227,7 @@ background-color:#6495ED;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/play.png</normaloff>../../../../Downloads/play.png</iconset>
+     <normaloff>../../../../../../../Downloads/play.png</normaloff>../../../../../../../Downloads/play.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -254,7 +254,7 @@ background-color:	#FFA500;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/arrow-down-sign-to-navigate.png</normaloff>../../../../Downloads/arrow-down-sign-to-navigate.png</iconset>
+     <normaloff>../../../../../../../Downloads/arrow-down-sign-to-navigate.png</normaloff>../../../../../../../Downloads/arrow-down-sign-to-navigate.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -281,7 +281,7 @@ background-color:#66CDAA;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/arrow-right.png</normaloff>../../../../Downloads/arrow-right.png</iconset>
+     <normaloff>../../../../../../../Downloads/arrow-right.png</normaloff>../../../../../../../Downloads/arrow-right.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -310,7 +310,7 @@ background-color:#66CDAA;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/free-icon-pet-food-6903249.png</normaloff>../../../../Downloads/free-icon-pet-food-6903249.png</iconset>
+     <normaloff>../../../../../../../Downloads/free-icon-pet-food-6903249.png</normaloff>../../../../../../../Downloads/free-icon-pet-food-6903249.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -336,29 +336,13 @@ background-color:#66CDAA;</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Downloads/dog-ball.png</normaloff>../../../../Downloads/dog-ball.png</iconset>
+     <normaloff>../../../../../../../Downloads/dog-ball.png</normaloff>../../../../../../../Downloads/dog-ball.png</iconset>
    </property>
    <property name="iconSize">
     <size>
      <width>40</width>
      <height>100</height>
     </size>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>240</y>
-     <width>251</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>사생활보호</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPlace1">
@@ -369,6 +353,11 @@ background-color:#66CDAA;</string>
      <width>81</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color:white;
@@ -389,6 +378,11 @@ border-style:solid;</string>
      <width>81</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color:white;
@@ -426,6 +420,11 @@ border-radius:10px;</string>
      <width>81</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color:white;
@@ -465,7 +464,7 @@ border-radius:10px;</string>
     </rect>
    </property>
    <property name="text">
-    <string>찰칵</string>
+    <string/>
    </property>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget">
@@ -535,7 +534,6 @@ border-radius:10px;</string>
   <zorder>btnLeft</zorder>
   <zorder>btnFeed</zorder>
   <zorder>btnPlay</zorder>
-  <zorder>label</zorder>
   <zorder>btnPlace1</zorder>
   <zorder>btnPlace2</zorder>
   <zorder>btnSavePlace</zorder>

@@ -155,7 +155,7 @@ border-style:solid;</string>
    <property name="geometry">
     <rect>
      <x>700</x>
-     <y>240</y>
+     <y>220</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -169,15 +169,15 @@ border-style:solid;</string>
     <string notr="true">background-color:transparent;</string>
    </property>
    <property name="text">
-    <string>오늘의 활동량</string>
+    <string>활동 상태</string>
    </property>
   </widget>
   <widget class="QLabel" name="labelActivity">
    <property name="geometry">
     <rect>
-     <x>930</x>
-     <y>240</y>
-     <width>61</width>
+     <x>890</x>
+     <y>220</y>
+     <width>101</width>
      <height>41</height>
     </rect>
    </property>
@@ -448,7 +448,7 @@ border-style:solid;</string>
     <rect>
      <x>670</x>
      <y>430</y>
-     <width>71</width>
+     <width>111</width>
      <height>18</height>
     </rect>
    </property>
@@ -461,7 +461,7 @@ border-style:solid;</string>
     <rect>
      <x>670</x>
      <y>460</y>
-     <width>71</width>
+     <width>111</width>
      <height>18</height>
     </rect>
    </property>
@@ -474,8 +474,8 @@ border-style:solid;</string>
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>1081</width>
-     <height>711</height>
+     <width>1091</width>
+     <height>701</height>
     </rect>
    </property>
    <property name="text">
@@ -729,13 +729,73 @@ border-radius:20px;}</string>
     <string/>
    </property>
   </widget>
+  <widget class="PlotWidget" name="widgetActivity" native="true">
+   <property name="geometry">
+    <rect>
+     <x>910</x>
+     <y>270</y>
+     <width>101</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:transparent;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelActInfo_2">
+   <property name="geometry">
+    <rect>
+     <x>700</x>
+     <y>270</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:transparent;</string>
+   </property>
+   <property name="text">
+    <string>칼로리 소모량</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelCalories">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>270</y>
+     <width>71</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:transparent;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <zorder>labelFrame</zorder>
+  <zorder>labelActInfo_2</zorder>
+  <zorder>widgetActivity</zorder>
   <zorder>labelWater</zorder>
   <zorder>labelWaterLevel</zorder>
   <zorder>labelFoodLevel</zorder>
   <zorder>widgetFoodLevel</zorder>
   <zorder>widgetWaterLevel</zorder>
   <zorder>labelFood</zorder>
-  <zorder>labelFrame</zorder>
   <zorder>labelDog</zorder>
   <zorder>labelPulseIcon</zorder>
   <zorder>btnHeart</zorder>
@@ -762,6 +822,7 @@ border-radius:20px;}</string>
   <zorder>editInit</zorder>
   <zorder>btnInit</zorder>
   <zorder>labelInit_2</zorder>
+  <zorder>labelCalories</zorder>
  </widget>
  <customwidgets>
   <customwidget>

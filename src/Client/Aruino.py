@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
+import pyqtgraph as pg
 from datetime import datetime
 import socket
 import numpy as np
@@ -16,6 +17,7 @@ form_class = uic.loadUiType("Main.ui")[0]
 form_cam_Class = uic.loadUiType("Cam.ui")[0]
 form_setting_Class = uic.loadUiType("Setting.ui")[0]
 form_register_Class = uic.loadUiType("Register.ui")[0]
+form_log_Class = uic.loadUiType("Log.ui")[0]
 
 server_address = "192.168.2.29"
 server_port = 8081
@@ -138,6 +140,25 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.btnUser4.clicked.connect(lambda: self.userSelect(4))
         self.btnRegister.clicked.connect(self.registerPage)
 
+        self.btnUser1.hide()
+        self.btnUser2.hide()
+        self.btnUser3.hide()
+        self.btnUser4.hide()
+
+        self.editInit.setValidator(QIntValidator(1,20))
+        self.btnInit.setText("입력")
+        self.btnInit.clicked.connect(self.userInit)
+        self.editInit.returnPressed.connect(self.userInit)
+
+    def userInit(self):
+        self.petID = self.editInit.text()
+        self.id_flag = True
+
+        self.editInit.hide()
+        self.btnInit.hide()
+        self.labelInit_2.hide()
+        self.firstInit()
+
     def userSelect(self, key):
         match(key):
             case 1:
@@ -188,9 +209,7 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
 
         self.btnCameraPage.clicked.connect(self.cameraPage)
         self.btnSetting.clicked.connect(self.settingPage)
-        self.btnPlayPage.clicked.connect(self.playPage)
-
-        self.labelFood.hide()
+        self.btnLogPage.clicked.connect(self.logPage)
 
         self.labelName.setText(self.name)
         self.labelAge.setText(self.age)
@@ -203,8 +222,7 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
             self.btnHeart.move(420,240)
             self.btnHeart.setIcon(QIcon("../../data/icon/heart.png"))
 
-        self.labelNameInfo.hide()
-        self.labelAgeInfo.hide()
+        self.setGraph()
 
         self.timer.start(1000)
 
@@ -228,14 +246,38 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         # print("request :", self.response)
         self.response = response.split("&&")
         sync_data = self.response
+
         if sync_data[0] == "Sync Data":
-            temp = sync_data[2]
             humidity = sync_data[1]
+            temp = sync_data[2]
+            self.activity = sync_data[3]
+            self.feeder_water_level = sync_data[4]
+            self.feeder_food_leovel = sync_data[5]
+            self.temp_body = sync_data[6]
+            self.pulse = sync_data[7]
+            
+            # print("Sync Data", sync_data)
 
-            self.labelTemp.setText(temp)
-            self.labelHumid.setText(humidity)
+            self.labelTemp.setText(f"현재 온도 : {temp}")
+            self.labelHumid.setText(f"현재 습도 : {humidity}")
+            self.labelActivity.setText(self.activity)
+            self.labelTempBody.setText(self.temp_body)
+            self.labelPulse.setText(self.pulse)
 
-            # print("getting sync data")
+            if self.activity == "쉬는 중":
+                active = 1
+            elif self.activity == "걷는 중":
+                active = 2
+            elif self.activity == "뛰는 중":
+                active = 3
+            else:
+                return
+
+            self.y = self.y[1:] + active
+            self.widget.plot(self.y)
+            self.data_line.setData(self.y)
+
+            print("getting sync data")
 
     def updateTime(self):
         self.now = datetime.now().strftime('%Y년 %m월 %d일  %H : %M : %S  ')
@@ -249,31 +291,58 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
 
         self.btnCameraPage.setIcon(QIcon("../../data/icon/video.png"))
         self.btnCameraPage.setIconSize(QSize(50, 50))
-        self.btnPlayPage.setIcon(QIcon("../../data/icon/file.png"))
-        self.btnPlayPage.setIconSize(QSize(50, 50))
+        self.btnLogPage.setIcon(QIcon("../../data/icon/file.png"))
+        self.btnLogPage.setIconSize(QSize(50, 50))
         self.btnSetting.setIcon(QIcon("../../data/icon/setting.png"))
 
         self.labelDog.setPixmap(QPixmap("../../data/icon/dog-sit.png")) 
         self.labelDog.setStyleSheet("background-color: transparent;")
 
-        self.btnFeed.setIcon(QIcon("../../data/icon/pet-food.png"))
         self.btnHeart.setIcon(QIcon("../../data/icon/heart.png"))
-
-        self.labelFood.setPixmap(QPixmap("../../data/icon/pet-food-filling.png"))
-        self.labelFoodEmpty.setPixmap(QPixmap("../../data/icon/pet-bowl.png"))
-        self.labelWater.setPixmap(QPixmap("../../data/icon/water-bowl.png"))
         
         self.labelPulseIcon.setPixmap(QPixmap("../../data/icon/pulse.png"))
         self.labelPawIcon.setPixmap(QPixmap("../../data/icon/paws.png"))
         self.labelPawIcon2.setPixmap(QPixmap("../../data/icon/paws.png"))
 
+        self.labelFood.setPixmap(QPixmap("../../data/icon/pet-bowl.png").scaled(60, 60))
+        self.labelWater.setPixmap(QPixmap("../../data/icon/water-bowl.png").scaled(60, 60))
+
+    def setGraph(self):
+        self.plotFood = self.findChild(pg.PlotWidget, "widgetFoodLevel")
+        self.plotWater = self.findChild(pg.PlotWidget, "widgetWaterLevel")
+
+        self.plotFood.setBackground('w')
+        self.plotWater.setBackground('w')
+
+        self.plotFood.getPlotItem().hideAxis('left')
+        # self.plotFood.getPlotItem().invertX(True)
+        # self.plotFood.getPlotItem().invertY(True)
+
+        self.plotWater.getPlotItem().hideAxis('left')
+        # self.plotWater.getPlotItem().invertX(True)
+        # self.plotWater.getPlotItem().invertY(True)
+
+        self.plotFood.setXRange(0, 100)
+        self.plotWater.setXRange(0, 100)
+        self.plotFood.setYRange(0, 1)
+        self.plotWater.setYRange(0, 1)
+
+        x = np.linspace(0, 1, 2)
+        water_level = [50] * 2 #self.water_level
+        food_level = [30] * 2 # self.food_level
+        curve_w1 = self.plotWater.plot(water_level, x, pen=(65, 105, 225))
+        curve_w2 = self.plotWater.plot([0,0], [0, 50], pen=(65, 105, 225))
+
+        curve_f1 = self.plotFood.plot(food_level, x, pen=(245, 194, 107))
+        curve_f2 = self.plotFood.plot([0,0], [0, 30], pen=(245, 194, 107))
+
+        self.plotFood.addItem(pg.FillBetweenItem(curve_f1, curve_f2, brush=(245, 194, 107)))
+        self.plotWater.addItem(pg.FillBetweenItem(curve_w1, curve_w2, brush=(65, 105, 225)))
+
     def cameraPage(self):
         self.cam = CamWindowClass(self)
         self.cam.show()
         self.hide()
-
-    def playPage(self):
-        pass
 
     def settingPage(self):
         self.setting = SettingWindowClass(self)
@@ -284,6 +353,99 @@ class WindowClass(QMainWindow, form_class):  # GUI 클래스
         self.register.frameGeometry().moveCenter(QDesktopWidget().availableGeometry().center())
         self.register.move(self.frameGeometry().topLeft())
         self.register.show()
+
+    def logPage(self):
+        self.log = LogWindowClass(self)
+        self.log.show()
+
+class LogWindowClass(QMainWindow, form_log_Class):
+    def __init__(self, windowClass):
+        super().__init__()
+        self.setupUi(self)
+        self.windowClass = windowClass
+
+        self.setWindowTitle("Weekly Log")
+
+        self.initUI()
+        self.retreiveActivityLog()
+
+    def initUI(self):
+        # self.widget = pg.GraphicsLayoutWidget()
+
+        self.plotCalories = self.findChild(pg.PlotWidget, "plotCalories")
+        self.plotFeed = self.findChild(pg.PlotWidget, "plotFeed")
+
+        self.plotCalories.setBackground('w')
+        self.plotFeed.setBackground('w')
+
+        # self.plot1 = pg.PlotWidget(background='w', title="Calories")
+        self.plotCalories.setXRange(1, 8, -1)
+        self.plotCalories.setYRange(0, 100)
+        # self.plot2 = pg.PlotWidget(background='w', title="Feeding")
+        self.plotFeed.setXRange(1, 8, -1)
+        self.plotFeed.setYRange(0, 100)
+
+        self.graph_layout = self.findChild(pg.GraphicsLayoutWidget, "widget")
+
+        self.graph_layout.setBackground('w')
+        self.plotLay = self.graph_layout.addPlot(title="Laying Down")
+        self.graph_layout.nextRow()
+        self.plotWalk = self.graph_layout.addPlot(title="Walking")
+        self.graph_layout.nextRow()
+        self.plotRun = self.graph_layout.addPlot(title="Running")
+
+        self.x = list(range(7))
+        self.y = [0] * 7
+    
+    def retreiveActivityLog(self):
+        self.day = []
+        self.calories = []
+        self.lay = []
+        self.walk = []
+        self.run = []
+
+        response = self.windowClass.requestTCP(["Activity Log", str(self.windowClass.petID)])
+        self.response = response.split("&&")
+        # print("request activity log")
+        if self.response[0] == "Activity Log":
+            for each in self.response[1:]:
+                tmp_list = each.split(",")
+                self.day.append(tmp_list[0].split(" ")[0])
+                self.calories.append(float(tmp_list[1]))
+                self.lay.append(int(tmp_list[2]))
+                self.walk.append(int(tmp_list[3]))
+                self.run.append(int(tmp_list[4]))
+
+            yesterday = int(self.day[0][-2:])
+            weekago = int(self.day[6][-2:])
+
+            print(yesterday, weekago)
+
+            self.plotCalories.setXRange(yesterday, weekago, -1)
+            self.plotFeed.setXRange(yesterday, weekago, -1)
+
+            self.labelYesterday.setText(self.day[0][-2:] + "일")
+            self.labelMidDay.setText(self.day[4][-2:] + "일")
+            self.labelWeekAgo.setText(self.day[6][-2:] + "일")
+            self.labelYesterday.hide()
+            self.labelMidDay.hide()
+            self.labelWeekAgo.hide()
+
+            # print("getting activity log", self.response)
+
+            self.data_calories = self.plotCalories.plot(self.x, self.calories, pen='r')
+            self.data_feed = self.plotFeed.plot(self.x, self.lay, self.walk, self.run, pen='r')
+            # self.plotCalories.plot(self.calories)
+            # self.plotFeed.plot(self.lay, self.walk, self.run)
+
+            self.data_lay = self.plotLay.plot(self.x, self.lay, pen='g')
+            self.data_walk = self.plotWalk.plot(self.x, self.walk, pen='b')
+            self.data_run = self.plotRun.plot(self.x, self.run, pen='y')
+
+            self.plotLay.setXRange(yesterday, weekago, -1)
+            self.plotWalk.setXRange(yesterday, weekago, -1)
+            self.plotRun.setXRange(yesterday, weekago, -1)
+
 
 class SettingWindowClass(QMainWindow, form_setting_Class):
     def __init__(self, windowClass):
@@ -420,13 +582,17 @@ class SettingWindowClass(QMainWindow, form_setting_Class):
             self.btnAdds[len_times + 1].clicked.connect(self.Add)
 
     def feedSetting(self):
-        feeding_schedule = ["Feeding Schedule", self.windowClass.petID]
+        retval = QMessageBox.question(self, 'Feed Setting', '배식 시간 설정을 설정하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if retval == QMessageBox.Yes:
+            feeding_schedule = ["Feeding Schedule", self.windowClass.petID]
 
-        for i in range(len(self.windowClass.feeding_times)):
-            feeding_schedule.append(self.windowClass.feeding_times[i])
+            for i in range(len(self.windowClass.feeding_times)):
+                feeding_schedule.append(self.windowClass.feeding_times[i])
 
-        message = feeding_schedule
-        self.windowClass.sendTCP(message)
+            message = feeding_schedule
+            self.windowClass.sendTCP(message)
+        else:
+            pass
 
     def mainPage(self):
         self.hide()
@@ -441,7 +607,7 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
         # print("Register Window", id(self))
 
         self.setWindowTitle("Register")
-        print("Register Page - windowClass :", windowClass)
+        # print("Register Page - windowClass :", windowClass)
         self.windowClass = windowClass
         print("Register Page - windowClass.id_flag :", self.windowClass.id_flag)
 
@@ -532,7 +698,7 @@ class RegisterWindowClass(QMainWindow, form_register_Class):
                 message.append(str(val))
             response = self.windowClass.requestTCP(message)
             response = response.split("&&")
-            print(response)
+            # print(response)
             self.windowClass.petID = response[0]
             self.windowClass.name = response[1]
             self.windowClass.birth = response[2]
@@ -617,6 +783,7 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         self.btnGood.show()
 
         for btnPlace in self.btnPlaces:
+            btnPlace.setFont(QFont("Ubuntu", 8))
             btnPlace.setText("즐겨찾는 장소")
             
         self.btnPlace1.clicked.connect(lambda : self.loadPlace(0))
@@ -649,7 +816,6 @@ class CamWindowClass(QMainWindow, form_cam_Class):
         places = response.split("&&")
         self.place_id_list = []
         self.place_name_list = []
-        print(len(places))
 
         if len(places) > 1:
             for i in range(0, len(places), 2):
@@ -662,6 +828,7 @@ class CamWindowClass(QMainWindow, form_cam_Class):
                                             border-color:#4169E1;\
                                             border-width:7px;\
                                             border-style:solid;")
+            self.btnPlaces[i].setFont(QFont("Ubuntu", 10))
             self.btnPlaces[i].setText(self.place_name_list[i])
 
     def loadPlace(self, key):
@@ -707,7 +874,8 @@ class CamWindowClass(QMainWindow, form_cam_Class):
                                                 border-color:#d4d4d4;\
                                                 border-width:7px;\
                                                 border-style:solid;")
-                self.btnPlaces[i].setText("")
+                self.btnPlaces[i].setFont(QFont("Ubuntu", 8))
+                self.btnPlaces[i].setText("즐겨찾는 장소")
 
             self.fetchPlaces()
     
@@ -771,8 +939,10 @@ class CamWindowClass(QMainWindow, form_cam_Class):
     def updateCamera(self):
         image = self.requestTCP(["Request WebCam Image"], iscamera=True)
         h, w, c = image.shape
+        
         qimage = QImage(image.data, w, h, w*c, QImage.Format_RGB888)
         self.pixmap = self.pixmap.fromImage(qimage)
+        self.pixmap = self.pixmap.scaled(670, 520, Qt.KeepAspectRatio)
         self.labelCamera.setPixmap(self.pixmap)
 
     def mainPage(self):

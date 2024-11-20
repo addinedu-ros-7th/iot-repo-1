@@ -72,7 +72,7 @@ void loop() {
   float temperatureC = voltage * 100.0;
 
   // 체온 보정: 15.7도에서 38도로 보정
-  float correctedTemperatureC = temperatureC + 21.5;
+  float correctedTemperatureC = temperatureC + 26.8;
 
   // MPU6050 가속도 데이터 읽기
   int16_t ax, ay, az;
@@ -82,14 +82,24 @@ void loop() {
   float az_g = (az / 16384.0);
   float totalAcceleration = sqrt(ax_g * ax_g + ay_g * ay_g + az_g * az_g);
   Serial.println(totalAcceleration);
-  // 활동 상태 계산
-  String newState = "쉬는 중";
-  if (totalAcceleration <= 0.84) {
-    newState = "쉬는 중";
-  } else if (totalAcceleration <= 1.25) {
-    newState = "걷는 중";
-  } else {
-    newState = "달리는 중";
+
+  // 히스테리시스 기반 상태 전환
+  String newState = currentState;
+
+  if (currentState == "쉬는 중") {
+    if (totalAcceleration > 0.9) {
+      newState = "걷는 중";
+    }
+  } else if (currentState == "걷는 중") {
+    if (totalAcceleration > 1.1) {
+      newState = "달리는 중";
+    } else if (totalAcceleration < 0.87) {
+      newState = "쉬는 중";
+    }
+  } else if (currentState == "달리는 중") {
+    if (totalAcceleration < 1.0) {
+      newState = "걷는 중";
+    }
   }
 
   // 1초마다 누적 시간 및 칼로리 계산 업데이트
@@ -116,7 +126,7 @@ void loop() {
   }
 
   // 랜덤 심박수 생성 (80~120)
-  int heartRate = random(80, 121); 
+  int heartRate = random(80, 121);
 
   // 서버에 데이터 전송
   if (!client.connected()) {
@@ -131,7 +141,7 @@ void loop() {
   // 데이터 합치기
   String key = "PetChecker Sync Data";
   String split_data = "&&";
-  
+
   // 데이터1: 보정된 온도, 데이터2: 심박수, 데이터3: 칼로리, 데이터4: 현재 상태, 데이터5: 쉬는 중 누적 시간, 데이터6: 걷는 중 누적 시간, 데이터7: 달리는 중 누적 시간
   String data1 = String(correctedTemperatureC);   // 보정된 온도
   String data2 = String(heartRate);               // 심박수
@@ -146,7 +156,7 @@ void loop() {
   // 일정 간격마다 데이터 전송
   if (currentTime - previousMillis >= interval) {
     previousMillis = currentTime;
-    
+
     client.print(data);
 
     Serial.println("Sent to server: " + data);

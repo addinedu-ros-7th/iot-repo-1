@@ -106,8 +106,6 @@ class WindowClass(QMainWindow, from_class):
         self.pet_walk = 0
         self.pet_run = 0
 
-
-
         self.remote = mysql.connector.connect(
             host = "database-1.c3micoc2s6p8.ap-northeast-2.rds.amazonaws.com",
             user = "aru",
@@ -124,6 +122,9 @@ class WindowClass(QMainWindow, from_class):
         # self.video = cv2.VideoCapture(0)
 
         self.test_btn.clicked.connect(self.test_fn)
+        self.pushButton_6.clicked.connect(self.test_fn2)
+        self.pushButton_9.clicked.connect(self.test_fn3)
+
         self.btn_up.pressed.connect(lambda: self.test_cam_fn("up", "start"))
         self.btn_down.pressed.connect(lambda: self.test_cam_fn("down", "start"))
         self.btn_left.pressed.connect(lambda: self.test_cam_fn("left", "start"))
@@ -143,10 +144,25 @@ class WindowClass(QMainWindow, from_class):
         message = "WebCam Control"
         print(key)
         sendSerial(self.py_serial, key, message)
+
+
+    def test_fn3(self):
+        print("##################################################")
+        print("################It's Time to Feed!! 54###############")
+        print("##################################################")
+        sendSerial(self.py_serial_feeder, 54, "")
     
+    def test_fn2(self):
+        print("##################################################")
+        print("################It's Time to Feed!! 53###############")
+        print("##################################################")
+        sendSerial(self.py_serial_feeder, 53, "")
+
     def test_fn(self):
         print("test btn pushed!!!")
-        sendSerial(self.py_serial, 53, "90,90")
+        # sendSerial(self.py_serial_feeder, 53, "u,90,90")
+        print("Feeder Sync Start!!")
+        sendSerial(self.py_serial_feeder, 1, "")
 
     def updateCamera(self):
         self.now_time = str(datetime.now())[:-7]
@@ -166,7 +182,10 @@ class WindowClass(QMainWindow, from_class):
         # print("only_now_time", self.only_now_time)
         # print("recent_feed_time", self.recent_feed_time)
 
-        if self.recent_feed_time <= self.only_now_time:
+        if self.recent_feed_time == self.only_now_time:
+            print("##################################################")
+            print("################It's Time to Feed!!###############")
+            print("##################################################")
             sendSerial(self.py_serial_feeder, 53, "u,400,10") # 53u,400,10
 
             if len(self.feeding_schedule) >= 1:
@@ -182,6 +201,8 @@ class WindowClass(QMainWindow, from_class):
             else:
                 self.recent_feed_time = "99:99"
             #  print("recent_feed_time:", self.recent_feed_time)
+            self.recent_feed_time = "99:99"
+            print(self.recent_feed_time)
 
 
     def initUI(self):
@@ -237,6 +258,10 @@ class WindowClass(QMainWindow, from_class):
     
         self.initUI()
         self.initUI_feedTime()
+
+        # 01 start Sync Data
+        print("Feeder Sync Start!!")
+        sendSerial(self.py_serial_feeder, 1, "")
 
         response = []
         for val in petInfo[0]:
@@ -435,12 +460,14 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                 myWindows.ledClient.setStyleSheet(f"background-color: {"yellow" if myWindows.Client_flag else "gray"};border: 1px solid black;") 
 
                 # if not parts[0] == "Sync Data" and not parts[0] == "Request WebCam Image":
-                #     print(parts)
+                print(parts)
 
                 if parts[0] == "Client First Init":
                     response = myWindows.fetchClientFirstInit(parts[1])
                     client_socket.send(response.encode("utf-8"))
                     client_first_init_flag = True
+
+                    print(myWindows.recent_feed_time)
                 elif parts[0] == "Update Pet ":
                     # TODO: UPDATE pet SET pet_name="Ham, Dong-Gyun" WHERE pet_id=1;
                     f'''
@@ -520,6 +547,8 @@ def receiveTCPClientEvent(server_socket1, myWindows, serial_socket):
                     client_socket.send(response.encode("utf-8"))
                 elif parts[0] == "Feeding Schedule":
                     myWindows.updateFeedingSchedule(parts[1:])
+                    _ = myWindows.fetchClientFirstInit(parts[1])
+                    print(myWindows.recent_feed_time)
                 elif parts[0] == "User Modify":
                     myWindows.updatePET(parts[1:])
 
@@ -580,10 +609,10 @@ def receiveSerialEvent(py_serial, myWindows):
             if serial_read_data[1] == "Feeder Sencing Data":
                 # myWindows.labelTempBody.setText(serial_read_data[3][:2])
                 # db에 저장하면 좋은가
-                myWindows.h = serial_read_data[2]
-                myWindows.t = serial_read_data[3]
-                myWindows.hit = serial_read_data[4]
-                myWindows.water_level = serial_read_data[5]
+                myWindows.feeder_humidity = serial_read_data[2]
+                myWindows.feeder_temperature = serial_read_data[3]
+                myWindows.feeder_hic = serial_read_data[4]
+                myWindows.feeder_water_level = serial_read_data[5]
                 # myWindows.food_level = serial_read_data[6]
 
                 myWindows.labelEnvTemp.setText(str(serial_read_data[3]) + "°C")

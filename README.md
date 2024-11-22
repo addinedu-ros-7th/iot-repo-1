@@ -112,12 +112,16 @@
    
  </br>
 <img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="900"/><br/>
-**[Feeding Schedule Setting]**<br/>
+
+**[Feeding Schedule Setting]**
+<br/>
 
 
 </div>
 <img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="900"/><br/>
-**[Server-Feeding Schedule changed]** <br/>
+
+**[Server-Feeding Schedule changed]** 
+<br/>
 
  　　　　　　　　　　　　　　　   
 

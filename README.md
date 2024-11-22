@@ -151,10 +151,9 @@
    
 <img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/> <br/>
 
-<img src="https://github.com/user-attachments/assets/bdf0cc14-bd56-4ff6-ae03-0f64024034cc" width="900"/>
-<br/>
+<img src="https://github.com/user-attachments/assets/bdf0cc14-bd56-4ff6-ae03-0f64024034cc" width="900"/><br/>
 **[Client Camera Control]**
-<br/>
+
 
 
 <img src="https://github.com/user-attachments/assets/cf55bac2-c427-4b7e-8af2-0c8c9187a6a4" width="900"/> <br/>

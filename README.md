@@ -105,25 +105,28 @@
 
 
    
+   
  </br>
 <img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="450"/>
-<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/>
-<br/>  
+<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/><br/>  
+
 **[Feeding Schedule Setting]** 　　　　　　　　　　　　　　　   **[Server-Feeding Schedule changed]** 
 
+
 <br/>
+<br/>
+<img src="https://github.com/user-attachments/assets/53d39db3-ced6-469d-be57-5956d19bcfd8" width="900"/>
 <br/>
 
-[![water sensor](https://img.youtube.com/vi/dZg-E-FREUM/0.jpg)](https://youtu.be/dZg-E-FREUM "water sensor") 
-<br/>
 **[Water Sensor - Servo]** 
 
 <br/>
 <br/>
 <br/>
 
-[![water sensor graph](https://img.youtube.com/vi/N9_jNXCYSfQ/0.jpg)](https://youtu.be/N9_jNXCYSfQ "water sensor graph") 
+<img src="https://github.com/user-attachments/assets/53d39db3-ced6-469d-be57-5956d19bcfd8" width="900"/>
 <br/>
+
 **[Water Sensor - Graph]** 
 <br/>
 <br/>
@@ -144,15 +147,15 @@
    
 <img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/> <br/>
 
-[![Client camera control](https://img.youtube.com/vi/h4qdG65eTXY/0.jpg)](https://youtu.be/h4qdG65eTXY "Client camera control") 
+<img src="https://github.com/user-attachments/assets/bdf0cc14-bd56-4ff6-ae03-0f64024034cc" width="900"/>
 <br/>
 
 **[Client Camera Control]**
 
 <br/>
 
-[![move to saved place](https://img.youtube.com/vi/KkiUwIEK9dQ/0.jpg)](https://youtu.be/KkiUwIEK9dQ "move to saved place") 
-<br/>
+
+<img src="https://github.com/user-attachments/assets/cf55bac2-c427-4b7e-8af2-0c8c9187a6a4" width="900"/> <br/>
 
 **[Camera Position Control to Saved Place]**
 
@@ -165,9 +168,11 @@
 
 * 상태 기록 조회
  	* 일주일 동안의 활동과 식사 정보 확인
+ 
 
-[![Activity Status](https://img.youtube.com/vi/87SXgsLanEE/0.jpg)](https://youtu.be/87SXgsLanEE "Activity status") 
+<img src="https://github.com/user-attachments/assets/f3678384-e3d9-4070-9a8f-52ca35d3b6ca" width="900"/><br/>
 <br/>
+
 **[Activity Status]**  <br/>
 
 <br/>

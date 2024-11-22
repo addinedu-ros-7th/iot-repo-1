@@ -74,21 +74,61 @@
 
 ## Feeder<br/>
 
-**[Feeding Schedule Setting]** 　　　　　　　　　　　　　　　   **[Server-Feeding Schedule changed]**  </br>
+ </br>
 <img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="450"/>
-<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/><br/>  
+<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/>
+<br/>  
+**[Feeding Schedule Setting]** 　　　　　　　　　　　　　　　   **[Server-Feeding Schedule changed]** 
+
+<br/>
+<br/>
+
+[![water sensor](https://img.youtube.com/vi/dZg-E-FREUM/0.jpg)](https://youtu.be/dZg-E-FREUM "water sensor") 
+<br/>
+**[Water Sensor - Servo]** 
+
+<br/>
+<br/>
+<br/>
+
+[![water sensor graph](https://img.youtube.com/vi/N9_jNXCYSfQ/0.jpg)](https://youtu.be/N9_jNXCYSfQ "water sensor graph") 
+<br/>
+**[Water Sensor - Graph]** 
+<br/>
 <br/>
 <br/>
 
 ## Communicator  <br/>
-<img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/><br/>
+
+<img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/> <br/>
+
+[![Client camera control](https://img.youtube.com/vi/h4qdG65eTXY/0.jpg)](https://youtu.be/h4qdG65eTXY "Client camera control") 
+<br/>
+
+**[Client Camera Control]**
+
+<br/>
+
+[![move to saved place](https://img.youtube.com/vi/KkiUwIEK9dQ/0.jpg)](https://youtu.be/KkiUwIEK9dQ "move to saved place") 
+<br/>
+
+**[Camera Position Control to Saved Place]**
+
 <br/>
 
 ## PetChecker  <br/>
-![Activity Status](https://youtu.be/87SXgsLanEE?si=Fryygbwy21mIzYtU/0.jpg)(https://youtu.be/87SXgsLanEE?si=Fryygbwy21mIzYtU)
+</br>
+
+[![Activity Status](https://img.youtube.com/vi/87SXgsLanEE/0.jpg)](https://youtu.be/87SXgsLanEE "Activity status") 
 <br/>
-<img src = "https://github.com/user-attachments/assets/737438e0-13f5-49b0-9fa0-31e98ff59e85" width = "900"/><br/>
+**[Activity Status]**  <br/>
+
 <br/>
+
+
+<img src = "https://github.com/user-attachments/assets/737438e0-13f5-49b0-9fa0-31e98ff59e85" width = "900"/> <br/>
+<br/>
+
 
 # 기능 설명
 

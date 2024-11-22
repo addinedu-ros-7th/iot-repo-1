@@ -45,8 +45,8 @@
 ## System Architecture  
 <img src="https://github.com/user-attachments/assets/804583a4-f028-4b06-9abf-e99acf2a9b64" width="900"/><br/>
 
-## ERA  <br/>
-<img src="https://github.com/user-attachments/assets/ee79098a-f8e9-4636-9cf0-1847e1115216" width="900"/><br/>
+## ERD  <br/>
+<img src="https://github.com/user-attachments/assets/d6c8adcb-cc91-459e-95d5-46a56e80b1ef" width="900"/><br/>
 <br/>
 
 ## Scenario  <br/>

@@ -83,12 +83,15 @@
 <br/>
 
 ## Controller
-* **Feeder**
- 	자동배식 및 급수가 가능한 배식기
-* **Communicator**
- 	반려동물 관찰 웹캠
-* **PetChecker**
- 	반려동물 상태 확인 목걸이
+
+
+| **Product**           | **Component**    | **Description**                          |
+|------------------------|------------------|------------------------------------------|
+| **Smart Pet Feeder**   | **Feeder**       | 자동 배식 및 급수가 가능한 배식기    |
+|                        | **Communicator** | 반려동물 관찰 웹캠                   |
+| **Smart Collar**       | **PetChecker**   | 반려동물 상태 확인 목걸이             |
+
+
   
 ### Feeder<br/>
 * 자동 배식 기능

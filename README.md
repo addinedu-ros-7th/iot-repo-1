@@ -32,13 +32,13 @@
 ## System Architecture  
 <img src="https://github.com/user-attachments/assets/804583a4-f028-4b06-9abf-e99acf2a9b64" width="550"/><br/>
 
-## ERA  
+## ERD
 <img src="https://github.com/user-attachments/assets/ee79098a-f8e9-4636-9cf0-1847e1115216" width="550"/><br/>
 
 ## Scenario  
 <img src="https://github.com/user-attachments/assets/d54b7165-086f-4926-9d2f-93b9de292dad" width="550"/><br/>
 
-## 배식기 기구설계  
+## 배식기 기구 설계  
 <img src="https://github.com/user-attachments/assets/5d164e08-ed92-412d-b44e-b0ef7f76d67c" width="550"/><br/>
 
 # 기능 설명  
@@ -62,7 +62,6 @@
 ## PetChecker  
 
 
-# 기능 설명
 
 # 결론
 ## 통합테스트 결과
@@ -79,5 +78,6 @@
 | **9. 놀이 기능**                      | - Controller에서 공을 던지고 강아지가 공을 물어오면 간식 제공                                                            | Fail       |
 | **10. 음성 출력 기능**                | - Client에서 버튼을 클릭 시 저장된 음성이 출력                                                                          | Fail       |
 
-
+## 문제점 및 개선 방안
+## 결과 및 기대 효과
 

@@ -31,8 +31,7 @@
 ## 활용 기술
 |구분|상세|
 |:---:|---|
-|**개발환경**|<img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/><img src="https://img.shields.io/badge/AMAZON RDS-527fff?style=for-the-badge&logo=visualstudiocode&logoColor=white"/>|
-|**IDE**|<img src="https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/Arduino-00878F?style=for-the-badge&logo=arduino&logoColor=white"/>|
+|**개발환경 및 도구**|<img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/> <img src="https://img.shields.io/badge/AMAZON RDS-527fff?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/Arduino-00878F?style=for-the-badge&logo=arduino&logoColor=white"/>|
 |**언어**|<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/> <img src="https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white"/>|
 |**UI**|<img src="https://img.shields.io/badge/PyQt5-28c745?style=for-the-badge&logo=PyQt5&logoColor=white"/>|
 |**기구 설계**|<img src="https://img.shields.io/badge/CATIA-2b388f?style=for-the-badge&logo=PyQt5&logoColor=white"/>|

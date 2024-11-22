@@ -179,15 +179,15 @@
  
 
 <img src="https://github.com/user-attachments/assets/f3678384-e3d9-4070-9a8f-52ca35d3b6ca" width="900"/><br/>
-<br/>
+
 
 **[Activity Status]**  <br/>
 
-<br/>
+
 
 
 <img src = "https://github.com/user-attachments/assets/737438e0-13f5-49b0-9fa0-31e98ff59e85" width = "900"/> <br/>
-<br/>
+
 
 
 # 결론

@@ -28,7 +28,7 @@
 | **김소영** | -Feeder 제작<br>-Client 개발<br>-Client GUI 개발   |
 | **김재현** | -Feeder 기구 설계 및 제작<br>-PetChecker 제작 및 개발 |
 
-## :데스크톱_컴퓨터: 활용 기술
+## 활용 기술
 |구분|상세|
 |:---:|---|
 |**개발환경**|<img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>|

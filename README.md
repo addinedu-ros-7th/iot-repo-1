@@ -130,8 +130,6 @@
 <br/>
 
 
-# 기능 설명
-
 # 결론
 ## 통합테스트 결과
 | **Function**                          | **Description**                                                                                       | **Result** |

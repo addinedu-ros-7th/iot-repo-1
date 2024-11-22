@@ -65,15 +65,43 @@
 ## Client GUI  <br/>
 
 <img src="https://github.com/user-attachments/assets/48e06be6-9d5d-4722-b83d-9e5d123878c7" width="900"/><br/>
+* 반려동물 상태 확인
+* 배식기 잔량 상태 확인
+* 등록정보 수정 / 배식 시간 설정 창
+* 카메라 모니터링 / 조작 창
+* 일주일 기록 확인 창
 <br/>
 
 ## Server GUI <br/>
 
 <img src="https://github.com/user-attachments/assets/37ea97c3-9b04-4ca4-bf43-b9187954ac99" width="900"/><br/>
+* 반려동물 정보 확인
+* 통신 상태 확인
+* PetChecker 정보
+* Feeder 설정/ 정보
+* Communicator 카메라 화면 
 <br/>
 
-## Feeder<br/>
+## Controller
+* **Feeder**
+ 	자동배식 및 급수가 가능한 배식기
+* **Communicator**
+ 	반려동물 관찰 웹캠
+* **PetChecker**
+ 	반려동물 상태 확인 목걸이
+  
+### Feeder<br/>
+* 자동 배식 기능
+  * Client가 설정한 시간에 맞춰 자동으로 사료 배식
+* 자동 급수 기능
+  * 물의 수위가 임계값 이하로 낮아지면 자동으로 급수
+  * 물의 수위가 임계값 이상으로 높아지면 자동으로 단수
 
+* 환경 온습도 실시간 정보 확인
+
+* 배식기 잔량 확인
+  * 그릇의 잔량을 측정해서 하루동안 섭취한 양을 GUI에서 표시
+   
  </br>
 <img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="450"/>
 <img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/>
@@ -98,8 +126,19 @@
 <br/>
 <br/>
 
-## Communicator  <br/>
+### Communicator  <br/>
+* 관찰 기능
+  * 웹캠을 통해 원격으로 반려견 모니터링
 
+* 카메라 조작 기능
+	 * 버튼을 통해 상하좌우로 카메라 각도를 조절 가능
+
+
+* 즐겨찾기 기능
+ 	* 반려견이 자주 머무는 장소를 저장
+	 * 장소를 누르면 해당 위치로 카메라가 회전
+
+   
 <img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/> <br/>
 
 [![Client camera control](https://img.youtube.com/vi/h4qdG65eTXY/0.jpg)](https://youtu.be/h4qdG65eTXY "Client camera control") 
@@ -118,6 +157,11 @@
 
 ## PetChecker  <br/>
 </br>
+* 반려동물 현재 상태 실시간 모니터링
+	 * 체온, 심박수, 홛동 상태, 칼로리 소모량
+
+* 상태 기록 조회
+ 	* 일주일 동안의 활동과 식사 정보 확인
 
 [![Activity Status](https://img.youtube.com/vi/87SXgsLanEE/0.jpg)](https://youtu.be/87SXgsLanEE "Activity status") 
 <br/>
@@ -145,7 +189,5 @@
 | **9. 놀이 기능**                      | - Controller에서 공을 던지고 강아지가 공을 물어오면 간식 제공                                                            | Fail       |
 | **10. 음성 출력 기능**                | - Client에서 버튼을 클릭 시 저장된 음성이 출력                                                                          | Fail       |
 
-## 문제점 및 개선 방안
-## 결과 및 기대 효과
 
 

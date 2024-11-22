@@ -108,10 +108,12 @@
    
    
  </br>
-<img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="450"/>
-<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/><br/>  
+<img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="900"/><br/>
+**[Feeding Schedule Setting]**<br/>
+<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="900"/><br/>
+**[Server-Feeding Schedule changed]** <br/>
 
-**[Feeding Schedule Setting]** 　　　　　　　　　　　　　　　   **[Server-Feeding Schedule changed]** 
+ 　　　　　　　　　　　　　　　   
 
 
 <br/>
@@ -133,17 +135,14 @@
 <br/>
 <br/>
 
-### Communicator  <br/>
-* 관찰 기능
-  * 웹캠을 통해 원격으로 반려견 모니터링
+### 기능리스트 - 2. Communicator
 
-* 카메라 조작 기능
-	 * 버튼을 통해 상하좌우로 카메라 각도를 조절 가능
+| **기능**           | **설명**                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| **관찰 기능**       | 웹캠을 통해 원격으로 반려견 모니터링                                      |
+| **카메라 조작 기능** | 버튼을 통해 상하좌우로 카메라 각도를 조절 가능                            |
+| **즐겨찾기 기능**   | 반려견이 자주 머무는 장소를 저장<br>저장된 장소를 누르면 해당 위치로 카메라가 회전 |
 
-
-* 즐겨찾기 기능
- 	* 반려견이 자주 머무는 장소를 저장
-	 * 장소를 누르면 해당 위치로 카메라가 회전
 
    
 <img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/> <br/>
@@ -162,13 +161,14 @@
 
 <br/>
 
-## PetChecker  <br/>
-</br>
-* 반려동물 현재 상태 실시간 모니터링
-	 * 체온, 심박수, 홛동 상태, 칼로리 소모량
+### 기능리스트 - 3. PetChecker  <br/>
 
-* 상태 기록 조회
- 	* 일주일 동안의 활동과 식사 정보 확인
+
+| **기능**            | **설명**                                                                 |
+|----------------------|-------------------------------------------------------------------------|
+| **반려동물 현재 상태 실시간 모니터링** | 체온, 심박수, 활동 상태, 칼로리 소모량을 실시간으로 모니터링                                     |
+| **상태 기록 조회**    | 일주일 동안의 활동과 식사 정보를 확인 가능                                  |
+
  
 
 <img src="https://github.com/user-attachments/assets/f3678384-e3d9-4070-9a8f-52ca35d3b6ca" width="900"/><br/>

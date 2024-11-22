@@ -110,6 +110,9 @@
  </br>
 <img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="900"/><br/>
 **[Feeding Schedule Setting]**<br/>
+
+
+</div>
 <img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="900"/><br/>
 **[Server-Feeding Schedule changed]** <br/>
 
@@ -118,7 +121,7 @@
 
 <br/>
 <br/>
-<img src="https://github.com/user-attachments/assets/53d39db3-ced6-469d-be57-5956d19bcfd8" width="900"/>
+<img src="https://github.com/user-attachments/assets/e0478d91-161b-4b3e-aaf1-1a22baea2841" width="900"/>
 <br/>
 
 **[Water Sensor - Servo]** 

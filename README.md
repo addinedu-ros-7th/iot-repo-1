@@ -38,32 +38,30 @@
 |**기구 설계**|<img src="https://img.shields.io/badge/CATIA-2b388f?style=for-the-badge&logo=PyQt5&logoColor=white"/>|
 |**DBMS**| <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>|
 |**협업**|<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/> <img src="https://img.shields.io/badge/SLACK-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> <img src="https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white"/> <img src="https://img.shields.io/badge/JIRA-0052CC?style=for-the-badge&logo=jira&logoColor=white"/> |
-<br>
 
-# 설계 <br/>
+
+# 설계
 
 
 ## System Architecture  
 <img src="https://github.com/user-attachments/assets/804583a4-f028-4b06-9abf-e99acf2a9b64" width="900"/><br/>
 
-## ERD  <br/>
+## ERD
 <img src="https://github.com/user-attachments/assets/d6c8adcb-cc91-459e-95d5-46a56e80b1ef" width="900"/><br/>
-<br/>
 
-## Scenario  <br/>
+## Scenario
 <img src="https://github.com/user-attachments/assets/d54b7165-086f-4926-9d2f-93b9de292dad" width="900"/><br/>
-<br/>
 
-## 배식기 기구설계  <br/>
+## 배식기 기구설계
 <img src="https://github.com/user-attachments/assets/5d164e08-ed92-412d-b44e-b0ef7f76d67c" width="900"/><br/>
-<br/>
 
-## 구성도 <br/>
+## 구성도
 <img src="https://github.com/user-attachments/assets/fdc1d0e5-7a03-42bf-aa5c-00e99c8fccdb" width="900"/><br/>
 
-# 기능 설명  <br/>
+# 기능 설명
 
-## Client GUI  <br/>
+## Client GUI
+
 | **기능**                   | **설명**                                                                 |
 |----------------------------|-------------------------------------------------------------------------|
 | **반려동물 상태 확인**      | 반려동물의 체온, 심박수, 활동 상태, 소모 칼로리 등 실시간 상태를 확인 가능                     |
@@ -72,11 +70,10 @@
 | **카메라 모니터링 / 조작** | 웹캠을 통해 반려동물을 모니터링하며, 카메라를 상하좌우로 조작 가능                   |
 | **일주일 기록 확인**     | 반려동물의 일주일간 활동 및 식사 정보를 GUI를 통해 확인 가능                      |<br/>
 
-<img src="https://github.com/user-attachments/assets/48e06be6-9d5d-4722-b83d-9e5d123878c7" width="900"/><br/>
+<img src="https://github.com/user-attachments/assets/48e06be6-9d5d-4722-b83d-9e5d123878c7" width="900"/>
 
-<br/>
 
-## Server GUI <br/>
+## Server GUI 
 
 | **기능**                   | **설명**                                                                 |
 |----------------------------|-------------------------------------------------------------------------|
@@ -88,7 +85,7 @@
 
 
 <img src="https://github.com/user-attachments/assets/37ea97c3-9b04-4ca4-bf43-b9187954ac99" width="900"/><br/>
-<br/>
+
 
 ## Controller
 
@@ -98,11 +95,9 @@
 | **Smart Pet Feeder**   | **1. Feeder**       | 자동 배식 및 급수가 가능한 배식기    |
 |                        | **2. Communicator** | 반려동물 관찰 웹캠                   |
 | **Smart Collar**       | **3. PetChecker**   | 반려동물 상태 확인 목걸이             |
-<br/>
 
 <img src="https://github.com/user-attachments/assets/017877b4-f1b7-4d36-b57e-9a70fb4020d6" width="900"/><br/>
-><br/>
-><br/>
+
   
 ### 기능리스트 - 1. Feeder
 
@@ -133,24 +128,19 @@
  　　　　　　　　　　　　　　　   
 
 
-<br/>
-<br/>
 <img src="https://github.com/user-attachments/assets/e0478d91-161b-4b3e-aaf1-1a22baea2841" width="900"/>
 <br/>
 
 **[Water Sensor - Servo]** 
 
-<br/>
-<br/>
-<br/>
+
 
 <img src="https://github.com/user-attachments/assets/53d39db3-ced6-469d-be57-5956d19bcfd8" width="900"/>
 <br/>
 
 **[Water Sensor - Graph]** 
 <br/>
-<br/>
-<br/>
+
 
 ### 기능리스트 - 2. Communicator
 

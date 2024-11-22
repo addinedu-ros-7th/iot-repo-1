@@ -93,6 +93,9 @@
 | **Smart Collar**       | **3. PetChecker**   | 반려동물 상태 확인 목걸이             |
 <br/>
 
+<img src="https://github.com/user-attachments/assets/017877b4-f1b7-4d36-b57e-9a70fb4020d6" width="900"/><br/>
+><br/>
+><br/>
   
 ### 기능리스트 - 1. Feeder
 

@@ -153,9 +153,7 @@
 
 <img src="https://github.com/user-attachments/assets/bdf0cc14-bd56-4ff6-ae03-0f64024034cc" width="900"/>
 <br/>
-
 **[Client Camera Control]**
-
 <br/>
 
 

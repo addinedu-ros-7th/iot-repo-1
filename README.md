@@ -28,45 +28,75 @@
 | **김소영** | -Feeder 제작<br>-Client 개발<br>-Client GUI 개발   |
 | **김재현** | -Feeder 기구 설계 및 제작<br>-PetChecker 제작 및 개발 |
 
-# 설계
+## :데스크톱_컴퓨터: 활용 기술
+|구분|상세|
+|---|---|
+|개발환경|<img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>|
+|IDE|<img src="https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/Arduino-00878F?style=for-the-badge&logo=arduino&logoColor=white"/>|
+|언어|<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/> <img src="https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white"/>|
+|UI|<img src="https://img.shields.io/badge/PyQt5-28c745?style=for-the-badge&logo=PyQt5&logoColor=white"/>|
+|기구 설계|<img src="https://img.shields.io/badge/CATIA-2b388f?style=for-the-badge&logo=PyQt5&logoColor=white"/>|
+|DB|<img src="https://img.shields.io/badge/AMAZON RDS-527fff?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>|
+|협업 툴|<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/> <br/> <img src="https://img.shields.io/badge/SLACK-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> <img src="https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white"/> <img src="https://img.shields.io/badge/JIRA-0052CC?style=for-the-badge&logo=jira&logoColor=white"/> |
+<br>
+
+# 설계 <br/>
+
+
 ## System Architecture  
-<img src="https://github.com/user-attachments/assets/804583a4-f028-4b06-9abf-e99acf2a9b64" width="550"/><br/>
+<img src="https://github.com/user-attachments/assets/804583a4-f028-4b06-9abf-e99acf2a9b64" width="900"/><br/>
 
-## ERD
-<img src="https://github.com/user-attachments/assets/ee79098a-f8e9-4636-9cf0-1847e1115216" width="550"/><br/>
+## ERA  <br/>
+<img src="https://github.com/user-attachments/assets/ee79098a-f8e9-4636-9cf0-1847e1115216" width="900"/><br/>
+<br/>
 
-## Scenario  
-<img src="https://github.com/user-attachments/assets/d54b7165-086f-4926-9d2f-93b9de292dad" width="550"/><br/>
+## Scenario  <br/>
+<img src="https://github.com/user-attachments/assets/d54b7165-086f-4926-9d2f-93b9de292dad" width="900"/><br/>
+<br/>
 
-## 배식기 기구 설계  
-<img src="https://github.com/user-attachments/assets/5d164e08-ed92-412d-b44e-b0ef7f76d67c" width="550"/><br/>
+## 배식기 기구설계  <br/>
+<img src="https://github.com/user-attachments/assets/5d164e08-ed92-412d-b44e-b0ef7f76d67c" width="900"/><br/>
+<br/>
 
-# 기능 설명  
+## 구성도 <br/>
+<img src="https://github.com/user-attachments/assets/fdc1d0e5-7a03-42bf-aa5c-00e99c8fccdb" width="900"/><br/>
 
-## Client GUI  
-<img src="https://github.com/user-attachments/assets/48e06be6-9d5d-4722-b83d-9e5d123878c7" width="550"/><br/>
+# 기능 설명  <br/>
 
-## Server GUI  
-<img src="https://github.com/user-attachments/assets/37ea97c3-9b04-4ca4-bf43-b9187954ac99" width="550"/><br/>
+## Client GUI  <br/>
 
-## Feeder  
-**[Feeding Schedule Setting]**  
-<img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="550"/><br/>  
+<img src="https://github.com/user-attachments/assets/48e06be6-9d5d-4722-b83d-9e5d123878c7" width="900"/><br/>
+<br/>
 
-**[Server-Feeding Schedule changed]**  
-<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="550"/><br/>  
+## Server GUI <br/>
 
-## Communicator  
-<img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="550"/><br/>
+<img src="https://github.com/user-attachments/assets/37ea97c3-9b04-4ca4-bf43-b9187954ac99" width="900"/><br/>
+<br/>
 
-## PetChecker  
+## Feeder<br/>
 
+**[Feeding Schedule Setting]** 　　　　　　　　　　　　　　　   **[Server-Feeding Schedule changed]**  </br>
+<img src="https://github.com/user-attachments/assets/46fd905b-281a-4c56-8629-dcac5422f5b9" width="450"/>
+<img src="https://github.com/user-attachments/assets/19b1c437-598f-4166-94a8-4f3e40871ada" width="450"/><br/>  
+<br/>
+<br/>
 
+## Communicator  <br/>
+<img src="https://github.com/user-attachments/assets/cc9b84fe-1c34-487e-9a67-1e86525efa65" width="900"/><br/>
+<br/>
+
+## PetChecker  <br/>
+![Activity Status](https://youtu.be/87SXgsLanEE?si=Fryygbwy21mIzYtU/0.jpg)(https://youtu.be/87SXgsLanEE?si=Fryygbwy21mIzYtU)
+<br/>
+<img src = "https://github.com/user-attachments/assets/737438e0-13f5-49b0-9fa0-31e98ff59e85" width = "900"/><br/>
+<br/>
+
+# 기능 설명
 
 # 결론
 ## 통합테스트 결과
 | **Function**                          | **Description**                                                                                       | **Result** |
-|---------------------------------------|-------------------------------------------------------------------------------------------------------|:------------:|
+|---------------------------------------|-------------------------------------------------------------------------------------------------------|------------|
 | **1. 물의 수위 제어**                 | - 물의 수위가 임계값 이하로 낮아지면 자동으로 급수<br>- 물의 수위가 임계값 이상으로 높아지면 자동으로 단수                      | Pass       |
 | **2. 사료 배식**                      | - Client가 설정한 시간에 맞춰 사료 배식을 자동으로 진행                                                                  | Pass       |
 | **3. 카메라 회전 제어**               | - Client GUI 클릭 시 카메라 좌우/상하 회전 기능<br>- 특정 위치를 저장한 뒤, 클릭 시 카메라가 해당 위치로 회전                     | Pass       |
@@ -78,6 +108,5 @@
 | **9. 놀이 기능**                      | - Controller에서 공을 던지고 강아지가 공을 물어오면 간식 제공                                                            | Fail       |
 | **10. 음성 출력 기능**                | - Client에서 버튼을 클릭 시 저장된 음성이 출력                                                                          | Fail       |
 
-## 문제점 및 개선 방안
-## 결과 및 기대 효과
-- 데이터 기반 반려동물 관리 시스템을 구축하여, 반려동물의 건강을 효율적으로 관리할 수 있는 개인 맞춤형 서비스를 제공할 수 있었다.
+
+

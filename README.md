@@ -1,4 +1,4 @@
-# ARUINO - 반려동물과 보호자를 위한 스마트 펫 케어 시스템
+![image](https://github.com/user-attachments/assets/68fb6bbd-9e8b-4313-9bd7-deb40fc886dd)
 
 
 # 프로젝트 소개

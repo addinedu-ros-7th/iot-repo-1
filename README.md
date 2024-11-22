@@ -125,8 +125,6 @@
 **[Server-Feeding Schedule changed]** 
 <br/>
 
- 　　　　　　　　　　　　　　　   
-
 
 <img src="https://github.com/user-attachments/assets/e0478d91-161b-4b3e-aaf1-1a22baea2841" width="900"/>
 <br/>
@@ -140,7 +138,6 @@
 
 **[Water Sensor - Graph]** 
 <br/>
-
 
 ### 2. Communicator
 
@@ -163,10 +160,7 @@
 
 
 <img src="https://github.com/user-attachments/assets/cf55bac2-c427-4b7e-8af2-0c8c9187a6a4" width="900"/> <br/>
-
 **[Camera Position Control to Saved Place]**
-
-<br/>
 
 ### 3. PetChecker  <br/>
 

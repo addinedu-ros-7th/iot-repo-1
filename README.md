@@ -127,7 +127,7 @@
 <br/>
 
 
-<img src="https://github.com/user-attachments/assets/c4ac2420-75b6-4a62-b598-ad5f5cc3dcff" width="900"/>
+<img src="https://github.com/user-attachments/assets/c4ac2420-75b6-4a62-b598-ad5f5cc3dcff" width="600"/>
 <br/>
 
 **[Feeding]** 
@@ -140,7 +140,7 @@
 
 
 
-<img src="https://github.com/user-attachments/assets/53a21fb5-d51d-4702-bcd0-61145f579ec8" width="900"/>
+<img src="https://github.com/user-attachments/assets/53a21fb5-d51d-4702-bcd0-61145f579ec8" width="700"/>
 <br/>
 
 **[Water Sensor - Graph]** 

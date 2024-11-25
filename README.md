@@ -140,7 +140,7 @@
 
 
 
-<img src="https://github.com/user-attachments/assets/53d39db3-ced6-469d-be57-5956d19bcfd8" width="900"/>
+<img src="https://github.com/user-attachments/assets/53a21fb5-d51d-4702-bcd0-61145f579ec8" width="900"/>
 <br/>
 
 **[Water Sensor - Graph]** 
